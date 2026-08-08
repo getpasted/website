@@ -73,7 +73,7 @@ export default function App() {
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Pasted home"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a>
         <nav aria-label="Primary navigation">
-          <a href="#enemy">The enemy</a><a href="#journey">The plan</a><a href="#field-kit">Field kit</a><a href={repoUrl}>GitHub</a>
+          <a href="#enemy">No memory</a><a href="#journey">Still need roads</a><a href="#field-kit">Pants on</a><a href={repoUrl}>GitHub</a>
         </nav>
         <a className="header-download" href={releaseUrl}>Get Pasted <span>↓</span></a>
       </header>
