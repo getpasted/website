@@ -184,7 +184,7 @@ export default function App() {
         </section>
 
         <section className="feature-section" id="field-kit">
-          <div className="chapter-mark"><span>04</span><p>The field kit</p></div>
+          <div className="chapter-mark"><span>04</span><p>Keep your pants on</p></div>
           <div className="section-intro"><p className="kicker">Go big or go Command-C</p><h2>Tiny toolbelt.<br/><em>Massive tool.</em></h2><p>Use one tool. Or all of them. Your clipboard has no idea what’s coming.</p></div>
           <div className="feature-grid">
             {features.map(feature => <article className="feature-card" key={feature.title}><span>{feature.icon}</span><h3>{feature.title}</h3><p>{feature.body}</p></article>)}
@@ -237,7 +237,7 @@ export default function App() {
         </section>
 
         <section className="resolution-section">
-          <div className="chapter-mark"><span>06</span><p>The point of all this</p></div>
+          <div className="chapter-mark"><span>06</span><p>Are you even reading any of this?</p></div>
           <p className="kicker">The future is already here. It just forgot what you copied.</p>
           <h2>Give your memory<br/><em>an API.</em></h2>
           <p>AI is becoming everything. Everything still needs context. A clipboard that remembers, organizes, transforms, and exposes its history is a very small piece of software with a very large future.</p>
