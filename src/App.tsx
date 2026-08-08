@@ -122,8 +122,8 @@ export default function App() {
         </div>
 
         <section className="enemy-section" id="enemy">
-          <div className="chapter-mark"><span>01</span><p>Meet the enemy</p></div>
-          <div className="enemy-copy"><p className="kicker">Out of sight. Out of clipboard.</p><h2>Your clipboard remembers everything.<br/><em>One thing at a time.</em></h2><p>Copy something new and the previous thing is promoted to former thing. This is an astonishing design choice for a machine capable of simulating weather and rendering dragons.</p><p>You don’t need discipline. Just get Pasted.</p></div>
+          <div className="chapter-mark"><span>01</span><p>The enemy has no memory</p></div>
+          <div className="enemy-copy"><p className="kicker">Out of sight. Out of clipboard.</p><h2>Your standard clipboard forgets everything.<br/><em>One thing at a time.</em></h2><p>Copy something new and the previous thing is promoted to former thing. This is an astonishing design choice for a machine capable of simulating weather and rendering dragons.</p><p>You don’t need discipline. Just get Pasted.</p></div>
           <div className="amnesia-machine" aria-label="A sequence showing copied items disappearing">
             <div className="machine-top"><span>SYSTEM CLIPBOARD</span><small>CAPACITY: 1</small></div>
             <div className="memory alive"><b>03</b><span>That important thing</span><em>HELD FOR NOW</em></div>
@@ -134,7 +134,7 @@ export default function App() {
         </section>
 
         <section className="guide-section">
-          <div className="chapter-mark"><span>02</span><p>Meet the guide</p></div>
+          <div className="chapter-mark"><span>02</span><p>Your spirit animal is a clipboard</p></div>
           <div className="guide-statement"><p className="kicker">What happens in the clipboard stays in Pasted</p><h2>Pasted keeps what<br/><em>your clipboard throws away.</em></h2><p>Pasted is the quiet accomplice between Copy and Paste. It catches what matters, gives it structure, and stays out of the way until you need it. No productivity doctrine. No mandatory cloud. No judgment about the thirty-seven tabs.</p></div>
           <aside className="field-note"><span>FIELD NOTE № 001</span><p>“If at first you don’t succeed, Command-C again. Pasted kept the first one.”</p><small>— The operating principle</small></aside>
         </section>
