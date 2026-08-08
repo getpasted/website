@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 const repoUrl = "https://github.com/getpasted/pasted";
 const releasesUrl = `${repoUrl}/releases`;
+const brewCommand = "brew install --cask getpasted/tap/pasted";
 
 type ReleaseAsset = { name: string; browser_download_url: string };
 type PublicRelease = {
@@ -81,6 +82,8 @@ function ProductWindow() {
 
 function ReleaseVault() {
   const [release, setRelease] = useState<PublicRelease | null | false>(null);
+  const [tapReady, setTapReady] = useState<boolean | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -96,11 +99,46 @@ function ReleaseVault() {
     return () => controller.abort();
   }, []);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("https://api.github.com/repos/getpasted/homebrew-tap/contents/Casks/pasted.rb", {
+      headers: { Accept: "application/vnd.github+json" },
+      signal: controller.signal,
+    })
+      .then(response => setTapReady(response.ok))
+      .catch(error => {
+        if (error?.name !== "AbortError") setTapReady(false);
+      });
+    return () => controller.abort();
+  }, []);
+
+  const copyBrewCommand = async () => {
+    await navigator.clipboard.writeText(brewCommand);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
+  };
+
+  const homebrew = (
+    <aside className={`homebrew-card ${tapReady ? "homebrew-ready" : ""}`}>
+      <div className="brew-heading">
+        <span className="brew-icon">⌂</span>
+        <div><small>HOMEBREW</small><strong>{tapReady ? "Pour irresponsibly." : "Tap online. Keg pending."}</strong></div>
+        <i>{tapReady === null ? "CHECKING" : tapReady ? "READY" : "AT 1.0"}</i>
+      </div>
+      <div className="brew-command" aria-label={`Homebrew command: ${brewCommand}`}>
+        <code><span>$</span> {brewCommand}</code>
+        <button type="button" onClick={copyBrewCommand} aria-label="Copy Homebrew install command">{copied ? "COPIED" : "COPY"}</button>
+      </div>
+      <p>{tapReady ? "The same signed app. Homebrew just does the dragging." : "This command wakes up with the first stable public release. The tap is already waiting."}</p>
+    </aside>
+  );
+
   if (release) {
     const macOS = release.assets.find(asset => asset.name.endsWith("_universal.dmg"));
     const linux = release.assets.find(asset => asset.name.endsWith("_amd64.AppImage"));
     const version = release.tag_name.replace(/^v/, "");
     return (
+      <div className="release-stack">
       <aside className="release-vault release-ready">
         <div className="vault-label"><span>PUBLIC RELEASE</span><i>{release.prerelease ? "RELEASE CANDIDATE" : "READY"}</i></div>
         <img src="/pasted-mark.svg" alt="" />
@@ -112,10 +150,13 @@ function ReleaseVault() {
         </div>
         <a className="release-details" href={release.html_url}>Release notes, checksums, and other paperwork <span>↗</span></a>
       </aside>
+      {homebrew}
+      </div>
     );
   }
 
   return (
+    <div className="release-stack">
     <aside className="release-vault">
       <div className="vault-label"><span>PUBLIC RELEASES</span><i>{release === null ? "CHECKING" : "SOON™"}</i></div>
       <img src="/pasted-mark.svg" alt="" />
@@ -124,6 +165,8 @@ function ReleaseVault() {
       <a className="button primary" href={releasesUrl}>Watch GitHub Releases <span>↗</span></a>
       <small>No email funnel. No fake countdown. No release we cannot prove exists.</small>
     </aside>
+    {homebrew}
+    </div>
   );
 }
 

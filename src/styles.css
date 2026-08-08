@@ -162,6 +162,17 @@ h1 em,h2 em { color:#7e8587; font-style:normal; }
 .release-details { display:flex; justify-content:space-between; gap:18px; margin-top:20px; padding-top:18px; border-top:1px solid var(--line); color:#70787a; font:500 9px/1.5 var(--mono); transition:color .2s ease; }
 .release-details:hover { color:#c4cbca; }
 .release-ready .vault-label i { border-color:rgba(101,230,180,.32); background:rgba(101,230,180,.09); }
+.release-stack { display:grid; gap:14px; min-width:0; }
+.homebrew-card { position:relative; overflow:hidden; padding:20px; border:1px solid var(--line); border-radius:18px; background:rgba(255,255,255,.018); }
+.homebrew-card::before { content:""; position:absolute; inset:auto -35px -55px auto; width:150px; height:150px; border-radius:50%; background:rgba(52,148,255,.07); filter:blur(28px); pointer-events:none; }
+.brew-heading { position:relative; display:grid; grid-template-columns:36px minmax(0,1fr) auto; align-items:center; gap:12px; }
+.brew-icon { width:36px; height:36px; display:grid; place-items:center; border:1px solid rgba(52,148,255,.17); border-radius:10px; background:rgba(52,148,255,.07); color:#67acff; font:600 15px var(--mono); }
+.brew-heading small,.brew-heading strong { display:block; }.brew-heading small{color:#5f686a;font:600 7px var(--mono);letter-spacing:.13em}.brew-heading strong{margin-top:4px;font-size:12px}.brew-heading i{padding:5px 7px;border:1px solid rgba(255,255,255,.08);border-radius:7px;color:#687173;font:600 7px var(--mono);font-style:normal;letter-spacing:.1em}
+.homebrew-ready .brew-heading i { border-color:rgba(101,230,180,.25); background:rgba(101,230,180,.06); color:var(--mint); }
+.brew-command { position:relative; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:10px; margin-top:16px; padding:7px 7px 7px 13px; border:1px solid rgba(255,255,255,.08); border-radius:11px; background:#0a0d0f; }
+.brew-command code { min-width:0; overflow:hidden; color:#b8c0c0; font:500 9px var(--mono); text-overflow:ellipsis; white-space:nowrap; }.brew-command code span{color:#5eabff}
+.brew-command button { min-width:60px; height:31px; border:1px solid rgba(52,148,255,.2); border-radius:8px; background:rgba(52,148,255,.08); color:#77b7ff; cursor:pointer; font:600 7px var(--mono); letter-spacing:.1em; transition:background .2s ease,border-color .2s ease,color .2s ease; }.brew-command button:hover{border-color:rgba(52,148,255,.42);background:rgba(52,148,255,.14);color:#fff}
+.homebrew-card>p { position:relative; margin:12px 0 0; color:#60686a; font:500 8px/1.55 var(--mono); }
 .final-cta{width:min(1120px,calc(100% - 48px));margin:190px auto 100px;padding:95px 24px;text-align:center;border:1px solid rgba(101,230,180,.16);border-radius:28px;background:radial-gradient(circle at 50% 0,rgba(101,230,180,.1),transparent 45%),rgba(255,255,255,.02)}.final-cta>img{width:51px;filter:invert(1);opacity:.9}.final-cta h2{margin:25px 0}.final-cta p{color:#858b8b;margin-bottom:30px}
 footer{width:min(1180px,calc(100% - 48px));margin:auto;min-height:120px;display:flex;align-items:center;border-top:1px solid var(--line);color:#62686a;font-size:11px}.footer-brand{color:#b9bdbc}.footer-brand .brand-mark{width:30px;height:30px;border-radius:9px}.footer-brand img{width:20px}footer p{margin-left:28px}footer div{margin-left:auto;display:flex;gap:28px}footer a:hover{color:#fff}
 
