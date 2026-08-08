@@ -1,5 +1,17 @@
-const releaseUrl = "https://github.com/getpasted/pasted/releases/latest";
+import { useEffect, useState } from "react";
+
 const repoUrl = "https://github.com/getpasted/pasted";
+const releasesUrl = `${repoUrl}/releases`;
+
+type ReleaseAsset = { name: string; browser_download_url: string };
+type PublicRelease = {
+  name: string | null;
+  tag_name: string;
+  html_url: string;
+  prerelease: boolean;
+  draft: boolean;
+  assets: ReleaseAsset[];
+};
 
 const clips = [
   { app: "Safari", icon: "↗", text: "getpasted.app", meta: "just now", tone: "blue" },
@@ -67,6 +79,54 @@ function ProductWindow() {
   );
 }
 
+function ReleaseVault() {
+  const [release, setRelease] = useState<PublicRelease | null | false>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("https://api.github.com/repos/getpasted/pasted/releases?per_page=10", {
+      headers: { Accept: "application/vnd.github+json" },
+      signal: controller.signal,
+    })
+      .then(response => response.ok ? response.json() as Promise<PublicRelease[]> : Promise.reject())
+      .then(releases => setRelease(releases.find(item => !item.draft) ?? false))
+      .catch(error => {
+        if (error?.name !== "AbortError") setRelease(false);
+      });
+    return () => controller.abort();
+  }, []);
+
+  if (release) {
+    const macOS = release.assets.find(asset => asset.name.endsWith("_universal.dmg"));
+    const linux = release.assets.find(asset => asset.name.endsWith("_amd64.AppImage"));
+    const version = release.tag_name.replace(/^v/, "");
+    return (
+      <aside className="release-vault release-ready">
+        <div className="vault-label"><span>PUBLIC RELEASE</span><i>{release.prerelease ? "RELEASE CANDIDATE" : "READY"}</i></div>
+        <img src="/pasted-mark.svg" alt="" />
+        <h3>{release.name || `Pasted ${version}`}</h3>
+        <p>Freshly bottled, publicly inspectable, and accompanied by cryptographic receipts.</p>
+        <div className="release-buttons">
+          {macOS && <a className="button primary" href={macOS.browser_download_url}>macOS <span>↓</span></a>}
+          {linux && <a className="button secondary" href={linux.browser_download_url}>Linux <span>↓</span></a>}
+        </div>
+        <a className="release-details" href={release.html_url}>Release notes, checksums, and other paperwork <span>↗</span></a>
+      </aside>
+    );
+  }
+
+  return (
+    <aside className="release-vault">
+      <div className="vault-label"><span>PUBLIC RELEASES</span><i>{release === null ? "CHECKING" : "SOON™"}</i></div>
+      <img src="/pasted-mark.svg" alt="" />
+      <h3>The first public batch is still being bottled.</h3>
+      <p>The signed macOS build and Linux AppImage are going through their final irresponsible copying exercises.</p>
+      <a className="button primary" href={releasesUrl}>Watch GitHub Releases <span>↗</span></a>
+      <small>No email funnel. No fake countdown. No release we cannot prove exists.</small>
+    </aside>
+  );
+}
+
 export default function App() {
   return (
     <div className="site-shell">
@@ -75,7 +135,7 @@ export default function App() {
         <nav aria-label="Primary navigation">
           <a href="#enemy">The enemy</a><a href="#journey">The plan</a><a href="#field-kit">Field kit</a><a href={repoUrl}>GitHub</a>
         </nav>
-        <a className="header-download" href={releaseUrl}>Get Pasted <span>↓</span></a>
+        <a className="header-download" href="#download">Get Pasted <span>↓</span></a>
       </header>
 
       <main id="top">
@@ -85,7 +145,7 @@ export default function App() {
             <h1>You have better things<br/><em>to forget about.</em></h1>
             <p className="hero-lede">Copy it. Forget it. Find it later. That was always the plan. Computers just missed the last part.</p>
             <div className="hero-actions">
-              <a className="button primary" href={releaseUrl}><span className="download-mark">↓</span><span>Get Pasted<small>macOS 13 or later</small></span></a>
+              <a className="button primary" href="#download"><span className="download-mark">↓</span><span>Get Pasted<small>macOS 13+ and Linux</small></span></a>
               <a className="button secondary" href={repoUrl}>View on GitHub <span>↗</span></a>
             </div>
             <p className="hero-note">Free and open source. No cover charge.</p>
@@ -243,9 +303,24 @@ export default function App() {
           <p>AI is becoming everything. Everything still needs context. A clipboard that remembers, organizes, transforms, and exposes its history is a very small piece of software with a very large future.</p>
         </section>
 
+        <section className="release-section" id="download">
+          <div className="release-copy">
+            <p className="kicker">The boring part, suspiciously well documented</p>
+            <h2>Download with confidence.<br/><em>Or at least checksums.</em></h2>
+            <p>Pasted is open source, keeps its core library on your device, and ships with enough receipts to make a clipboard app look oddly responsible.</p>
+            <div className="release-facts">
+              <article><span>⌘</span><div><strong>macOS</strong><small>Signed and notarized by Apple.</small></div></article>
+              <article><span>▣</span><div><strong>Linux</strong><small>AppImage tested on SteamOS.</small></div></article>
+              <article><span>#</span><div><strong>Checksums</strong><small>SHA-256 receipts included.</small></div></article>
+              <article><span>⌂</span><div><strong>Local first</strong><small>Your clipboard stays your business.</small></div></article>
+            </div>
+          </div>
+          <ReleaseVault />
+        </section>
+
         <section className="final-cta">
           <div className="cell-colony" aria-hidden="true">{Array.from({ length: 14 }, (_, index) => <i key={index} />)}</div>
-          <img src="/pasted-mark.svg" alt=""/><h2>Get Pasted tonight.<br/><em>Remember everything tomorrow.</em></h2><p>No matter how many shots you take, Pasted will be there, holding your hair, rubbing your back, and not judging you for your clipboard history.</p><a className="button primary" href={releaseUrl}>Get Pasted <span>↓</span></a>
+          <img src="/pasted-mark.svg" alt=""/><h2>Get Pasted tonight.<br/><em>Remember everything tomorrow.</em></h2><p>No matter how many shots you take, Pasted will be there, holding your hair, rubbing your back, and not judging you for your clipboard history.</p><a className="button primary" href="#download">Get Pasted <span>↓</span></a>
         </section>
       </main>
 
