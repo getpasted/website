@@ -123,7 +123,7 @@ export default function App() {
 
         <section className="enemy-section" id="enemy">
           <div className="chapter-mark"><span>01</span><p>The enemy has no memory</p></div>
-          <div className="enemy-copy"><p className="kicker">Out of sight. Out of clipboard.</p><h2>Your standard clipboard forgets everything.<br/><em>One thing at a time.</em></h2><p>Copy something new and the previous thing is promoted to former thing. This is an astonishing design choice for a machine capable of simulating weather and rendering dragons.</p><p>You don’t need discipline. Just get Pasted.</p></div>
+          <div className="enemy-copy"><p className="kicker">Out of sight. Out of clipboard.</p><h2>Your standard clipboard forgets everything.<br/><em>One thing at a time.</em></h2><p>Copy something new and the previous thing is promoted to former thing. This is an astonishing design choice for a machine capable of simulating weather and rendering dragons.</p><p>I’m sorry. I forgot why I came in here.</p></div>
           <div className="amnesia-machine" aria-label="A sequence showing copied items disappearing">
             <div className="machine-top"><span>SYSTEM CLIPBOARD</span><small>CAPACITY: 1</small></div>
             <div className="memory alive"><b>03</b><span>That important thing</span><em>HELD FOR NOW</em></div>
