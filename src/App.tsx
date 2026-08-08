@@ -101,7 +101,7 @@ export default function App() {
         </section>
 
         <section className="trust-line" aria-label="Pasted qualities">
-          <span>Copy and forget</span><i /> <span>Lose nothing</span><i /> <span>Find the unfindable</span><i /> <span>Copy responsibly</span>
+          <span>Copy and forget</span><i /> <span>Lose nothing</span><i /> <span>Find the unfindable</span><i /> <span>Copy irresponsibly</span>
         </section>
 
         <div className="replication-ribbon" aria-hidden="true">
@@ -249,7 +249,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><a className="brand footer-brand" href="#top"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a><p>Made by Triple J Software, Inc. Copy responsibly.</p><div><a href={repoUrl}>GitHub</a><a href={`${repoUrl}/releases`}>Releases</a><a href={`${repoUrl}/issues`}>Good at Listening</a></div></footer>
+      <footer><a className="brand footer-brand" href="#top"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a><p>Made by Triple J Software, Inc. Copy irresponsibly.</p><div><a href={repoUrl}>GitHub</a><a href={`${repoUrl}/releases`}>Releases</a><a href={`${repoUrl}/issues`}>Good at Listening</a></div></footer>
     </div>
   );
 }
