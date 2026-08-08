@@ -73,7 +73,7 @@ export default function App() {
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Pasted home"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a>
         <nav aria-label="Primary navigation">
-          <a href="#enemy">No memory</a><a href="#journey">Still need roads</a><a href="#field-kit">Pants on</a><a href={repoUrl}>GitHub</a>
+          <a href="#enemy">The enemy</a><a href="#journey">The plan</a><a href="#field-kit">Field kit</a><a href={repoUrl}>GitHub</a>
         </nav>
         <a className="header-download" href={releaseUrl}>Get Pasted <span>↓</span></a>
       </header>
@@ -81,7 +81,7 @@ export default function App() {
       <main id="top">
         <section className="hero">
           <div className="hero-copy">
-            <p className="kicker"><span>✦</span> For humans, robots, scripts, and other copycats</p>
+            <p className="kicker">For humans, robots, scripts, and other copycats</p>
             <h1>You have better things<br/><em>to forget about.</em></h1>
             <p className="hero-lede">Copy it. Forget it. Find it later. That was always the plan. Computers just missed the last part.</p>
             <div className="hero-actions">
@@ -106,13 +106,13 @@ export default function App() {
 
         <div className="replication-ribbon" aria-hidden="true">
           <div className="replication-track">
-            <span>REPLICATION DEPARTMENT</span><i />
+            <span>REPLICATION DEPARTMENT DEPARTMENT</span><i />
             <span>DOLLY HAS ENTERED THE CHAT 🐑</span><i />
             <span>AGENT SMITH WOULD LIKE TO PASTE</span><i />
             <span>MITOSIS COMPLETED SUCCESSFULLY</span><i />
             <span>XEROX MACHINE IS WARM</span><i />
             <span>CTRL+C HAS REPRODUCED</span><i />
-            <span>REPLICATION DEPARTMENT</span><i />
+            <span>REPLICATION DEPARTMENT DEPARTMENT</span><i />
             <span>DOLLY HAS ENTERED THE CHAT 🐑</span><i />
             <span>AGENT SMITH WOULD LIKE TO PASTE</span><i />
             <span>MITOSIS COMPLETED SUCCESSFULLY</span><i />
