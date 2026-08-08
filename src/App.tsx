@@ -245,7 +245,7 @@ export default function App() {
 
         <section className="final-cta">
           <div className="cell-colony" aria-hidden="true">{Array.from({ length: 14 }, (_, index) => <i key={index} />)}</div>
-          <img src="/pasted-mark.svg" alt=""/><h2>Get Pasted tonight.<br/><em>Remember everything tomorrow.</em></h2><p>Take all the shots you want. Pasted keeps the screenshots, the receipts, and the things you were definitely going to remember yourself.</p><a className="button primary" href={releaseUrl}>Get Pasted <span>↓</span></a>
+          <img src="/pasted-mark.svg" alt=""/><h2>Get Pasted tonight.<br/><em>Remember everything tomorrow.</em></h2><p>No matter how many shots you take, Pasted will be there, holding your hair, rubbing your back, and not judging you for your clipboard history.</p><a className="button primary" href={releaseUrl}>Get Pasted <span>↓</span></a>
         </section>
       </main>
 
