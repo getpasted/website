@@ -1,5 +1,5 @@
-const releaseUrl = "https://github.com/pasted-app/pasted/releases/latest";
-const repoUrl = "https://github.com/pasted-app/pasted";
+const releaseUrl = "https://github.com/getpasted/pasted/releases/latest";
+const repoUrl = "https://github.com/getpasted/pasted";
 
 const clips = [
   { app: "Safari", icon: "↗", text: "getpasted.app", meta: "just now", tone: "blue" },
@@ -249,7 +249,7 @@ export default function App() {
         </section>
       </main>
 
-      <footer><a className="brand footer-brand" href="#top"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a><p>Made by Triple J Software, Inc. Copy responsibly.</p><div><a href={repoUrl}>GitHub</a><a href={`${repoUrl}/releases`}>Releases</a><a href={`${repoUrl}/issues`}>Feedback</a></div></footer>
+      <footer><a className="brand footer-brand" href="#top"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a><p>Made by Triple J Software, Inc. Copy responsibly.</p><div><a href={repoUrl}>GitHub</a><a href={`${repoUrl}/releases`}>Releases</a><a href={`${repoUrl}/issues`}>Good at Listening</a></div></footer>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 # Pasted website
 
-The public website for [Pasted](https://github.com/pasted-app/pasted), a fast,
+The public website for [Pasted](https://github.com/getpasted/pasted), a fast,
 private clipboard manager.
 
 ## Development
