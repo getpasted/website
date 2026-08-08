@@ -178,7 +178,7 @@ export default function App() {
         </section>
 
         <section className="journey-section" id="journey">
-          <div className="chapter-mark"><span>03</span><p>The expedition</p></div>
+          <div className="chapter-mark"><span>03</span><p>Where we’re going we still need roads</p></div>
           <div className="section-intro"><p className="kicker">Same old copy. Brand new paste.</p><h2>You keep copying.<br/><em>We’ll stop forgetting.</em></h2></div>
           <div className="journey-grid">{journey.map(step => <article className="journey-card" data-step={step.number} key={step.number}><span>{step.number}</span><h3>{step.title}</h3><p>{step.body}</p></article>)}</div>
         </section>
