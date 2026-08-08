@@ -91,12 +91,35 @@ export default function App() {
             <p className="hero-note">Free and open source. No cover charge.</p>
           </div>
           <div className="hero-glow" aria-hidden="true" />
+          <div className="hero-specimens" aria-hidden="true">
+            <span className="specimen specimen-a">COPY № 001</span>
+            <span className="specimen specimen-b">PASTE № 001</span>
+            <span className="specimen specimen-c">CLONE VERIFIED</span>
+            <span className="specimen specimen-d">⌘C → ⌘V</span>
+          </div>
           <ProductWindow />
         </section>
 
         <section className="trust-line" aria-label="Pasted qualities">
           <span>Copy and forget</span><i /> <span>Lose nothing</span><i /> <span>Find the unfindable</span><i /> <span>Copy responsibly</span>
         </section>
+
+        <div className="replication-ribbon" aria-hidden="true">
+          <div className="replication-track">
+            <span>REPLICATION DEPARTMENT</span><i />
+            <span>DOLLY HAS ENTERED THE CHAT 🐑</span><i />
+            <span>AGENT SMITH WOULD LIKE TO PASTE</span><i />
+            <span>MITOSIS COMPLETED SUCCESSFULLY</span><i />
+            <span>XEROX MACHINE IS WARM</span><i />
+            <span>CTRL+C HAS REPRODUCED</span><i />
+            <span>REPLICATION DEPARTMENT</span><i />
+            <span>DOLLY HAS ENTERED THE CHAT 🐑</span><i />
+            <span>AGENT SMITH WOULD LIKE TO PASTE</span><i />
+            <span>MITOSIS COMPLETED SUCCESSFULLY</span><i />
+            <span>XEROX MACHINE IS WARM</span><i />
+            <span>CTRL+C HAS REPRODUCED</span><i />
+          </div>
+        </div>
 
         <section className="enemy-section" id="enemy">
           <div className="chapter-mark"><span>01</span><p>Meet the enemy</p></div>
@@ -114,6 +137,44 @@ export default function App() {
           <div className="chapter-mark"><span>02</span><p>Meet the guide</p></div>
           <div className="guide-statement"><p className="kicker">What happens in the clipboard stays in Pasted</p><h2>Pasted keeps what<br/><em>your clipboard throws away.</em></h2><p>Pasted is the quiet accomplice between Copy and Paste. It catches what matters, gives it structure, and stays out of the way until you need it. No productivity doctrine. No mandatory cloud. No judgment about the thirty-seven tabs.</p></div>
           <aside className="field-note"><span>FIELD NOTE № 001</span><p>“If at first you don’t succeed, Command-C again. Pasted kept the first one.”</p><small>— The operating principle</small></aside>
+        </section>
+
+        <section className="story-section" aria-labelledby="supporting-cast">
+          <div className="story-intro">
+            <p className="kicker">A gripping character study</p>
+            <h2 id="supporting-cast">Meet the supporting cast.<br/><em>They’re very attached.</em></h2>
+            <p>Three ordinary office supplies. One extraordinary inability to let go.</p>
+          </div>
+          <div className="story-grid">
+            <article className="story-card clip-story">
+              <header><span>01</span><strong>Clip</strong><small>Short-term memory</small></header>
+              <div className="story-stage" aria-hidden="true">
+                <div className="clipboard-character"><i/><b>!</b></div>
+                <div className="loose-thought">VERY IMPORTANT</div>
+                <div className="catcher">PASTED</div>
+              </div>
+              <h3>Forgets everything. Immediately.</h3>
+              <p>Clip means well. Clip can only hold one thought. Pasted follows behind with a net.</p>
+            </article>
+            <article className="story-card glue-story">
+              <header><span>02</span><strong>Paste</strong><small>Attachment specialist</small></header>
+              <div className="story-stage" aria-hidden="true">
+                <div className="glue-bottle"><i/><b>PASTE</b></div>
+                <span className="scrap scrap-a">URL</span><span className="scrap scrap-b">IDEA</span><span className="scrap scrap-c">CODE</span>
+              </div>
+              <h3>Has trouble letting go.</h3>
+              <p>A serious boundary issue in an adhesive is actually excellent product design.</p>
+            </article>
+            <article className="story-card history-story">
+              <header><span>03</span><strong>History</strong><small>Professional overthinker</small></header>
+              <div className="story-stage" aria-hidden="true">
+                <div className="history-reel"><i/></div>
+                <div className="history-tape"><span>NOW</span><span>EARLIER</span><span>THAT THING</span></div>
+              </div>
+              <h3>Brings up everything from the past.</h3>
+              <p>Usually exhausting. Surprisingly useful when the past contains your perfect sentence.</p>
+            </article>
+          </div>
         </section>
 
         <section className="journey-section" id="journey">
@@ -140,14 +201,52 @@ export default function App() {
           <div className="terminal"><div className="terminal-bar"><span className="traffic red"/><span className="traffic yellow"/><span className="traffic green"/><small>zsh</small></div><pre><span className="prompt">$</span> pasted copy "https://wordpress.org/download/"<br/><span className="dim">Saved.</span> The web can continue.<br/><br/><span className="prompt">$</span> pasted search "Framework screwdriver"<br/><span className="dim">Found.</span> The laptop you are allowed to open.<br/><br/><span className="prompt">$</span> pasted search "Vollebak Full Metal Jacket"<br/><span className="dim">Found.</span> Tuesday outfit. 11km of copper included. <span className="cursor">▋</span></pre></div>
         </section>
 
+        <section className="prior-art-section">
+          <div className="chapter-mark"><span>05</span><p>Prior art department</p></div>
+          <div className="section-intro">
+            <p className="kicker">Copying has been working since before computers</p>
+            <h2>Nothing is original.<br/><em>We checked.</em></h2>
+            <p>Cells divide. Sheep get cloned. Agents multiply. Office machines hum. Pasted simply gives your clipboard several billion years of overdue evolution.</p>
+          </div>
+          <div className="experiment-grid">
+            <article className="experiment-card cell-experiment">
+              <header><small>Specimen 01</small><span>Mitosis</span></header>
+              <div className="experiment-visual" aria-hidden="true"><i className="mother-cell"><b/><b/></i></div>
+              <h3>Two for the price of one cell.</h3>
+              <p>Beta testing since approximately 3.8 billion years ago.</p>
+            </article>
+            <article className="experiment-card sheep-experiment">
+              <header><small>Specimen 02</small><span>Dolly</span></header>
+              <div className="experiment-visual sheep-line" aria-hidden="true"><i>🐑</i><i>🐑</i><i>🐑</i></div>
+              <h3>Version control. But wool.</h3>
+              <p>First successful commit: 1996. Merge request still pending.</p>
+            </article>
+            <article className="experiment-card smith-experiment">
+              <header><small>Specimen 03</small><span>Agent Smith</span></header>
+              <div className="experiment-visual smith-line" aria-hidden="true"><i>01</i><i>01</i><i>01</i><i>01</i><i>01</i></div>
+              <h3>Infinite instances. One dress code.</h3>
+              <p>Enterprise cloning with extremely proprietary sunglasses.</p>
+            </article>
+            <article className="experiment-card copier-experiment">
+              <header><small>Specimen 04</small><span>Office copier</span></header>
+              <div className="experiment-visual copier-stage" aria-hidden="true"><div className="copier"><i/><b/><span>READY</span></div></div>
+              <h3>The original Command-C.</h3>
+              <p>Paper jammed. Cyan depleted. Somehow still essential.</p>
+            </article>
+          </div>
+        </section>
+
         <section className="resolution-section">
-          <div className="chapter-mark"><span>05</span><p>The point of all this</p></div>
+          <div className="chapter-mark"><span>06</span><p>The point of all this</p></div>
           <p className="kicker">The future is already here. It just forgot what you copied.</p>
           <h2>Give your memory<br/><em>an API.</em></h2>
           <p>AI is becoming everything. Everything still needs context. A clipboard that remembers, organizes, transforms, and exposes its history is a very small piece of software with a very large future.</p>
         </section>
 
-        <section className="final-cta"><img src="/pasted-mark.svg" alt=""/><h2>Get Pasted tonight.<br/><em>Remember everything tomorrow.</em></h2><p>Take all the shots you want. Pasted keeps the screenshots, the receipts, and the things you were definitely going to remember yourself.</p><a className="button primary" href={releaseUrl}>Get Pasted <span>↓</span></a></section>
+        <section className="final-cta">
+          <div className="cell-colony" aria-hidden="true">{Array.from({ length: 14 }, (_, index) => <i key={index} />)}</div>
+          <img src="/pasted-mark.svg" alt=""/><h2>Get Pasted tonight.<br/><em>Remember everything tomorrow.</em></h2><p>Take all the shots you want. Pasted keeps the screenshots, the receipts, and the things you were definitely going to remember yourself.</p><a className="button primary" href={releaseUrl}>Get Pasted <span>↓</span></a>
+        </section>
       </main>
 
       <footer><a className="brand footer-brand" href="#top"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a><p>Made by JJJ Software. Copy responsibly.</p><div><a href={repoUrl}>GitHub</a><a href={`${repoUrl}/releases`}>Releases</a><a href={`${repoUrl}/issues`}>Feedback</a></div></footer>
