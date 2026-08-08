@@ -17,9 +17,9 @@ const features = [
 ];
 
 const journey = [
-  { number: "01", title: "Copy first. Ask questions later.", body: "Change nothing. Pasted catches text, links, images, files, and the strange fragments between them." },
-  { number: "02", title: "Put everything in its place. Even if you don’t.", body: "Pin the critical bits. Drop clips into Bins. Let rules do the work you were definitely getting around to." },
-  { number: "03", title: "Those who search, find. Eventually.", body: "We made eventually instant. Use search, the HUD, history, or the CLI and bring anything back ready to work." },
+  { number: "01", title: ["Copy first.", "Ask questions last."], body: "Change nothing. Pasted catches text, links, images, files, and the strange fragments between them." },
+  { number: "02", title: ["There’s no place like", "wherever you decide."], body: "Pin the critical bits. Drop clips into Bins. Let rules do the work you were definitely getting around to." },
+  { number: "03", title: ["Search around.", "Find out."], body: "We made eventually instant. Use search, the HUD, history, or the CLI and bring anything back ready to work." },
 ];
 
 function ProductWindow() {
@@ -180,7 +180,7 @@ export default function App() {
         <section className="journey-section" id="journey">
           <div className="chapter-mark"><span>03</span><p>Where we’re going we still need roads</p></div>
           <div className="section-intro"><p className="kicker">Same old copy. Brand new paste.</p><h2>You keep copying.<br/><em>We’ll stop forgetting.</em></h2></div>
-          <div className="journey-grid">{journey.map(step => <article className="journey-card" data-step={step.number} key={step.number}><span>{step.number}</span><h3>{step.title}</h3><p>{step.body}</p></article>)}</div>
+          <div className="journey-grid">{journey.map(step => <article className="journey-card" data-step={step.number} key={step.number}><span>{step.number}</span><h3>{step.title.map(line => <span key={line}>{line}</span>)}</h3><p>{step.body}</p></article>)}</div>
         </section>
 
         <section className="feature-section" id="field-kit">
