@@ -21,12 +21,21 @@ const clips = [
 ];
 
 const features = [
-  { icon: "⌘", title: "Forget me not", body: "Remember exactly what you forgot using the half-remembered bit still rattling around your head." },
+  { icon: "⌘", title: "Forget me not.", body: "Remember exactly what you forgot using the half-remembered bit still rattling around your head." },
   { icon: "▦", title: "A place for everything. Automatically.", body: "Put everything in its place without having to remember where that place is." },
   { icon: "✦", title: "Change is inevitable. Formatting is optional.", body: "Turn unruly text into clean Markdown, reshaped data, or something intelligence has had a word with." },
-  { icon: "◫", title: "Take another shot", body: "Pasted keeps screenshots, PDFs, images, text, links, and files together. No hangover folder required." },
-  { icon: "›_", title: "Speak softly. Carry a big CLI.", body: "The GUI points and clicks. The CLI pipes, scripts, and generally gets carried away." },
-  { icon: "◎", title: "Home is where the database is", body: "Your core library lives on your machine. The cloud is where it doesn’t." },
+  { icon: "◫", title: "Take your shot.", body: "Pasted keeps screenshots, PDFs, images, text, links, and files together. No hangover folder required." },
+  { icon: "›_", title: "Speak softly. Copy your own copy.", body: "The GUI points and clicks. The CLI pipes, scripts, and generally gets carried away." },
+  { icon: "◎", title: "Home is where the database is.", body: "Your core library lives on your machine. The cloud is where it doesn’t." },
+];
+
+const replicationMessages = [
+  "REPLICATION DEPARTMENT DEPARTMENT",
+  "DOLLY HAS ENTERED THE CHAT 🐑",
+  "AGENT SMITH WOULD LIKE TO PASTE",
+  "MITOSIS COMPLETED SUCCESSFULLY",
+  "XEROX MACHINE IS WARM",
+  "CTRL+C HAS REPRODUCED",
 ];
 
 const journey = [
@@ -209,18 +218,11 @@ export default function App() {
 
         <div className="replication-ribbon" aria-hidden="true">
           <div className="replication-track">
-            <span>REPLICATION DEPARTMENT DEPARTMENT</span><i />
-            <span>DOLLY HAS ENTERED THE CHAT 🐑</span><i />
-            <span>AGENT SMITH WOULD LIKE TO PASTE</span><i />
-            <span>MITOSIS COMPLETED SUCCESSFULLY</span><i />
-            <span>XEROX MACHINE IS WARM</span><i />
-            <span>CTRL+C HAS REPRODUCED</span><i />
-            <span>REPLICATION DEPARTMENT DEPARTMENT</span><i />
-            <span>DOLLY HAS ENTERED THE CHAT 🐑</span><i />
-            <span>AGENT SMITH WOULD LIKE TO PASTE</span><i />
-            <span>MITOSIS COMPLETED SUCCESSFULLY</span><i />
-            <span>XEROX MACHINE IS WARM</span><i />
-            <span>CTRL+C HAS REPRODUCED</span><i />
+            {[0, 1].map(copy => (
+              <div className="replication-set" key={copy}>
+                {replicationMessages.map(message => <span key={message}>{message}<i /></span>)}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -238,7 +240,7 @@ export default function App() {
 
         <section className="guide-section">
           <div className="chapter-mark"><span>02</span><p>Your spirit animal is a clipboard</p></div>
-          <div className="guide-statement"><p className="kicker">What happens in the clipboard stays in Pasted</p><h2>Pasted keeps what<br/><em>your clipboard throws away.</em></h2><p>Pasted is the quiet accomplice between Copy and Paste. It catches what matters, gives it structure, and stays out of the way until you need it. No productivity doctrine. No mandatory cloud. No judgment about the thirty-seven tabs.</p></div>
+          <div className="guide-statement"><p className="kicker">What happens in the clipboard stays in Pasted</p><h2>Pasted keeps <em>what <br/>your clipboard throws away.</em></h2><p>Pasted is the quiet accomplice between Copy and Paste. It catches what matters, gives it structure, and stays out of the way until you need it. No productivity doctrine. No mandatory cloud. No judgment about the thirty-seven tabs.</p></div>
           <aside className="field-note"><span>FIELD NOTE № 001</span><p>“If at first you don’t succeed, Command-C again. Pasted kept the first one.”</p><small>— The operating principle</small></aside>
         </section>
 
