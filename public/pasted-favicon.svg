@@ -1,11 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <style>
-    .pasted-favicon-mark { stroke: #111418; }
+    .pasted-favicon-mark {
+      stroke: #111418;
+    }
+
     @media (prefers-color-scheme: dark) {
-      .pasted-favicon-mark { stroke: #f4f7f5; }
+      .pasted-favicon-mark {
+        stroke: #f4f7f5;
+      }
     }
   </style>
-  <g class="pasted-favicon-mark" fill="none" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round">
+  <g
+    class="pasted-favicon-mark"
+    fill="none"
+    stroke-width="2.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
     <path d="M10 6.25H22C23.8 6.25 25.25 7.7 25.25 9.5V24.5C25.25 26.3 23.8 27.75 22 27.75H10C8.2 27.75 6.75 26.3 6.75 24.5V9.5C6.75 7.7 8.2 6.25 10 6.25Z" />
     <path d="M11.5 7V5.5C11.5 4.1 12.6 3 14 3H18C19.4 3 20.5 4.1 20.5 5.5V7" />
     <path d="M11.25 14H20.75M11.25 19H18.5" />
