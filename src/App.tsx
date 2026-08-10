@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
 const repoUrl = "https://github.com/getpasted/pasted";
 const releasesUrl = `${repoUrl}/releases`;
 const brewCommand = "brew install --cask getpasted/tap/pasted";
+
+type DemoClip = { app: string; icon: string; text: string; meta: string; tone: string };
 
 type ReleaseAsset = { name: string; browser_download_url: string };
 type PublicRelease = {
@@ -15,19 +17,28 @@ type PublicRelease = {
   assets: ReleaseAsset[];
 };
 
-const clips = [
+const clips: DemoClip[] = [
   { app: "Safari", icon: "↗", text: "getpasted.app", meta: "just now", tone: "blue" },
   { app: "Terminal", icon: ">_", text: "npm run tauri dev", meta: "2 min", tone: "mint" },
   { app: "Notes", icon: "Aa", text: "Everything you copy, ready when you need it.", meta: "8 min", tone: "amber" },
 ];
 
+const copyText = async (text: string) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    window.dispatchEvent(new CustomEvent("pasted-copy", { detail: text }));
+  } catch {
+    window.dispatchEvent(new CustomEvent("pasted-copy", { detail: "Clipboard permission declined. Very on-brand." }));
+  }
+};
+
 const features = [
-  { icon: "⌘", title: "Forget me not.", body: "Remember exactly what you forgot using the half-remembered bit still rattling around your head." },
-  { icon: "▦", title: "A place for everything. Automatically.", body: "Put everything in its place without having to remember where that place is." },
-  { icon: "✦", title: "Change is inevitable. Formatting is optional.", body: "Turn unruly text into clean Markdown, reshaped data, or something intelligence has had a word with." },
-  { icon: "◫", title: "Take your shot.", body: "Pasted keeps screenshots, PDFs, images, text, links, and files together. No hangover folder required." },
-  { icon: "›_", title: "Speak softly. Copy your own copy.", body: "The GUI points and clicks. The CLI pipes, scripts, and generally gets carried away." },
-  { icon: "◎", title: "Home is where the database is.", body: "Your core library lives on your machine. The cloud is where it doesn’t." },
+  { kind: "history", icon: "⌘", title: "History", body: "Remember exactly what you forgot using the half-remembered bit still rattling around your head." },
+  { kind: "bins", icon: "▦", title: "Bins", body: "Put everything in its place without having to remember where that place is." },
+  { kind: "transforms", icon: "✦", title: "Transforms", body: "Turn unruly text into clean Markdown, reshaped data, or something intelligence has had a word with." },
+  { kind: "files", icon: "◫", title: "File Types", body: "Keep screenshots, PDFs, images, text, links, and files together. No hangover folder required." },
+  { kind: "cli", icon: "›_", title: "CLI", body: "The GUI points and clicks. The CLI pipes, scripts, and generally gets carried away." },
+  { kind: "sqlite", icon: "◎", title: "SQLite", body: "Your core library lives on your machine. The cloud is where it doesn’t." },
 ];
 
 const replicationMessages = [
@@ -39,6 +50,15 @@ const replicationMessages = [
   "CTRL+C HAS REPRODUCED",
 ];
 
+function FeaturePreview({ kind }: { kind: string }) {
+  if (kind === "history") return <div className="feature-preview preview-history" aria-hidden="true"><i>09:41</i><b>That perfect sentence</b><i>09:38</i><span>The link from earlier</span></div>;
+  if (kind === "bins") return <div className="feature-preview preview-bins" aria-hidden="true"><span>🌭 Manual</span><span>💬 Replies</span><span>🔗 Links</span></div>;
+  if (kind === "transforms") return <div className="feature-preview preview-transforms" aria-hidden="true"><code>messy text</code><i>✦</i><code>**clean text**</code></div>;
+  if (kind === "files") return <div className="feature-preview preview-files" aria-hidden="true"><span>PDF</span><span>IMG</span><span>TXT</span><span>URL</span></div>;
+  if (kind === "cli") return <div className="feature-preview preview-cli" aria-hidden="true"><code><b>$</b> pasted search "that thing"</code><small>Found. Obviously.</small></div>;
+  return <div className="feature-preview preview-sqlite" aria-hidden="true"><span>clips</span><span>bins</span><span>revisions</span><i>LOCAL</i></div>;
+}
+
 const journey = [
   { number: "01", title: ["Copy first.", "Ask questions last."], body: "Change nothing. Pasted catches text, links, images, files, and the strange fragments between them." },
   { number: "02", title: ["There’s no place like", "wherever you decide."], body: "Pin the critical bits. Drop clips into Bins. Let rules do the work you were definitely getting around to." },
@@ -46,6 +66,20 @@ const journey = [
 ];
 
 function ProductWindow() {
+  const [visibleClips, setVisibleClips] = useState(1);
+  const [selected, setSelected] = useState(0);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setVisibleClips(current => current >= clips.length ? 1 : current + 1);
+      setSelected(0);
+    }, 3200);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  const shownClips = clips.slice(0, visibleClips).reverse();
+  const activeClip = shownClips[selected] ?? shownClips[0];
+
   return (
     <div className="product-window" aria-label="Preview of the Pasted app">
       <div className="window-bar">
@@ -67,26 +101,117 @@ function ProductWindow() {
         <section className="clip-list">
           <div className="list-head"><strong>HISTORY</strong><span>◫ &nbsp; ◎</span></div>
           <div className="clip-stack">
-            {clips.map((clip, index) => (
-              <article className={`clip-card ${index === 0 ? "selected" : ""}`} key={clip.app}>
+            {shownClips.map((clip, index) => (
+              <button type="button" className={`clip-card ${index === selected ? "selected" : ""}`} key={`${visibleClips}-${clip.app}`} onClick={() => setSelected(index)}>
                 <span className={`clip-icon ${clip.tone}`}>{clip.icon}</span>
                 <div><strong>{clip.app}</strong><p>{clip.text}</p></div>
                 <time>{clip.meta}</time>
-              </article>
+              </button>
             ))}
           </div>
         </section>
         <section className="clip-preview">
-          <div className="preview-head"><span className="type-pill">Text</span><strong>Safari</strong><span className="preview-actions">⌘ &nbsp; ◫ &nbsp; ♡</span></div>
+          <div className="preview-head"><span className="type-pill">Text</span><strong>{activeClip.app}</strong><span className="preview-actions">⌘ &nbsp; ◫ &nbsp; ♡</span></div>
           <div className="preview-body">
             <div className="preview-label">CLIP CONTENT</div>
-            <p>getpasted.app</p>
-            <div className="note"><span>✦</span><div><strong>Ready for later.</strong><small>Saved automatically from Safari</small></div></div>
+            <p>{activeClip.text}</p>
+            <div className="note"><span>✦</span><div><strong>Ready for later.</strong><small>Saved automatically from {activeClip.app}</small></div></div>
           </div>
-          <div className="preview-meta"><span>CHARS<br/><b>13</b></span><span>WORDS<br/><b>1</b></span><span>CAPTURED<br/><b>Just now</b></span></div>
+          <div className="preview-meta"><span>CHARS<br/><b>{activeClip.text.length}</b></span><span>WORDS<br/><b>{activeClip.text.split(/\s+/).length}</b></span><span>CAPTURED<br/><b>{activeClip.meta}</b></span></div>
         </section>
       </div>
+      <div className="capture-signal" aria-live="polite"><span>+</span> Captured without making a scene</div>
     </div>
+  );
+}
+
+const demoSnippets = [
+  "The password is definitely not password.",
+  "https://getpasted.app/#the-part-i-will-forget",
+  "A suspiciously perfect sentence I will need on Thursday.",
+];
+
+function ClipboardCrimeScene() {
+  const [systemClipboard, setSystemClipboard] = useState<Array<{ id: number; text: string }>>([]);
+  const [pastedHistory, setPastedHistory] = useState<Array<{ text: string; copies: number }>>([]);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const evidenceId = useRef(0);
+  const crimeQueue = useRef(Promise.resolve());
+  const copiedReset = useRef<number | undefined>(undefined);
+
+  const commitCrime = (snippet: string, index: number) => {
+    crimeQueue.current = crimeQueue.current.then(async () => {
+      await copyText(snippet);
+      setSystemClipboard(current => [{ id: evidenceId.current++, text: snippet }, ...current.filter(item => item.text !== snippet)].slice(0, 3));
+      setPastedHistory(current => {
+        const previous = current.find(item => item.text === snippet);
+        return [{ text: snippet, copies: (previous?.copies ?? 0) + 1 }, ...current.filter(item => item.text !== snippet)];
+      });
+      setCopiedIndex(index);
+      if (copiedReset.current !== undefined) window.clearTimeout(copiedReset.current);
+      copiedReset.current = window.setTimeout(() => setCopiedIndex(null), 900);
+    });
+  };
+
+  return (
+    <section className="clipboard-lab" aria-labelledby="clipboard-lab-title">
+      <div className="chapter-mark"><span>01½</span><p>Recreate the crime</p></div>
+      <div className="lab-intro">
+        <p className="kicker">Many clips are harmed during this demonstration</p>
+        <h2 id="clipboard-lab-title">Copy three things.<br/><em>Keep all the evidence.</em></h2>
+        <p>Try the buttons. Your standard clipboard develops selective amnesia. Pasted develops a case file.</p>
+      </div>
+      <div className="lab-grid">
+        <div className="copy-deck">
+          {demoSnippets.map((snippet, index) => (
+            <button type="button" className={copiedIndex === index ? "just-copied" : ""} onClick={() => commitCrime(snippet, index)} key={snippet}>
+              <span>0{index + 1}</span><code>{snippet}</code><b>{copiedIndex === index ? "COPIED" : "COPY"}</b>
+            </button>
+          ))}
+        </div>
+        <div className="clipboard-results">
+          <article className="standard-result">
+            <header><span>STANDARD CLIPBOARD</span><b>CAPACITY: 1</b></header>
+            {systemClipboard.length === 0 ? <p className="empty-evidence">Waiting to forget something.</p> : <div className="evidence-stack">{systemClipboard.map((item, index) => (
+              <div className="evidence-slot" style={{ "--evidence-index": index } as CSSProperties} key={item.id}><div className={`evidence ${index > 0 ? "destroyed" : ""}`}><span>{index === 0 ? "HELD" : "FORGOTTEN TEXT"}</span><p>{item.text}</p></div></div>
+            ))}</div>}
+            {systemClipboard.length > 1 && <small className="dead-scrolls">THE DEAD ⌘C SCROLLS</small>}
+          </article>
+          <article className="pasted-result">
+            <header><span>PASTED</span><b>{pastedHistory.length} REMEMBERED</b></header>
+            {pastedHistory.length === 0 ? <p className="empty-evidence">Suspiciously ready.</p> : <div className="evidence-stack">{pastedHistory.map((item, index) => (
+              <div className="evidence-slot" style={{ "--evidence-index": index } as CSSProperties} key={item.text}><div className="evidence retained"><span>0{pastedHistory.length - index}</span><b className="copy-count">×{item.copies}</b><p>{item.text}</p></div></div>
+            ))}</div>}
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FeedbackTerminal() {
+  const [kind, setKind] = useState("idea");
+  const [message, setMessage] = useState("");
+  const labels: Record<string, string> = {
+    bug: "Something escaped containment",
+    idea: "A clipboard-related revelation",
+    love: "Suspiciously positive feedback",
+    emergency: "Existential clipboard emergency",
+  };
+  const issueUrl = `${repoUrl}/issues/new?title=${encodeURIComponent(`[${kind}] ${message.slice(0, 72) || labels[kind]}`)}&body=${encodeURIComponent(`${message || "Tell us everything. We are good at listening."}\n\n— Sent from getpasted.app`)}`;
+
+  return (
+    <section className="feedback-section" id="listening">
+      <div className="feedback-copy"><p className="kicker">Good at listening</p><h2>Tell us what happened.<br/><em>We’ll remember this time.</em></h2><p>No support maze. This opens a transparent GitHub issue with your message already attached.</p></div>
+      <div className="feedback-terminal">
+        <div className="feedback-kinds" role="group" aria-label="Feedback type">
+          {Object.entries(labels).map(([value, label]) => <button type="button" className={kind === value ? "active" : ""} onClick={() => setKind(value)} key={value}>{label}</button>)}
+        </div>
+        <label htmlFor="feedback-message">TRANSMISSION</label>
+        <textarea id="feedback-message" value={message} onChange={event => setMessage(event.target.value)} placeholder="The clipboard did a thing..." />
+        <a className="button primary" href={issueUrl}>Open a GitHub issue <span>↗</span></a>
+      </div>
+    </section>
   );
 }
 
@@ -94,6 +219,12 @@ function ReleaseVault() {
   const [release, setRelease] = useState<PublicRelease | null | false>(null);
   const [tapReady, setTapReady] = useState<boolean | null>(null);
   const [copied, setCopied] = useState(false);
+  const [platform, setPlatform] = useState<"macos" | "linux" | "windows" | "other">("other");
+
+  useEffect(() => {
+    const identity = `${navigator.platform} ${navigator.userAgent}`.toLowerCase();
+    setPlatform(identity.includes("mac") ? "macos" : identity.includes("linux") ? "linux" : identity.includes("win") ? "windows" : "other");
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -147,6 +278,10 @@ function ReleaseVault() {
     const macOS = release.assets.find(asset => asset.name.endsWith("_universal.dmg"));
     const linux = release.assets.find(asset => asset.name.endsWith("_amd64.AppImage"));
     const version = release.tag_name.replace(/^v/, "");
+    const primaryAsset = platform === "linux" ? linux : macOS;
+    const secondaryAsset = platform === "linux" ? macOS : linux;
+    const primaryLabel = platform === "linux" ? "Linux" : "macOS";
+    const secondaryLabel = platform === "linux" ? "macOS" : "Linux";
     return (
       <div className="release-stack">
       <aside className="release-vault release-ready">
@@ -154,10 +289,10 @@ function ReleaseVault() {
         <img src="/pasted-mark.svg" alt="" />
         <h3>{release.name || `Pasted ${version}`}</h3>
         <p>Freshly bottled, publicly inspectable, and accompanied by cryptographic receipts.</p>
-        <div className="release-buttons">
-          {macOS && <a className="button primary" href={macOS.browser_download_url}>macOS <span>↓</span></a>}
-          {linux && <a className="button secondary" href={linux.browser_download_url}>Linux <span>↓</span></a>}
-        </div>
+        {platform === "windows" ? <a className="button primary windows-wait" href={release.html_url}>Windows is sobering up <span>…</span></a> : <div className="release-buttons">
+          {primaryAsset && <a className="button primary" href={primaryAsset.browser_download_url}>Download for {primaryLabel} <span>↓</span></a>}
+          {secondaryAsset && <a className="button secondary" href={secondaryAsset.browser_download_url}>{secondaryLabel} <span>↓</span></a>}
+        </div>}
         <a className="release-details" href={release.html_url}>Release notes, checksums, and other paperwork <span>↗</span></a>
       </aside>
       {homebrew}
@@ -181,6 +316,12 @@ function ReleaseVault() {
 }
 
 export default function App() {
+  const [trail, setTrail] = useState<Array<{ id: number; text: string }>>([{ id: 0, text: "You arrived." }]);
+  const [toast, setToast] = useState("");
+  const [irresponsible, setIrresponsible] = useState(false);
+  const trailRef = useRef<HTMLElement>(null);
+  const trailEntryId = useRef(1);
+
   useEffect(() => {
     const leftScenes = document.querySelectorAll<HTMLElement>(
       ".enemy-copy,.guide-statement,.split-copy,.cli-section>div:first-child,.release-copy",
@@ -189,7 +330,7 @@ export default function App() {
       ".amnesia-machine,.field-note,.privacy-card,.terminal,.release-section>div:last-child",
     );
     const upwardScenes = document.querySelectorAll<HTMLElement>(
-      ".feature-section>.chapter-mark,.feature-card,.story-intro>*:not(.kicker),.story-card,.journey-section>.chapter-mark,.journey-card,.prior-art-section>.chapter-mark,.prior-art-section>.section-intro,.experiment-card,.resolution-section>.chapter-mark,.resolution-section>h2,.resolution-section>p,.final-cta>img,.final-cta>h2,.final-cta>p,.final-cta>.button",
+      ".feature-section>.chapter-mark,.feature-card,.story-intro>*:not(.kicker),.story-card,.journey-section>.chapter-mark,.journey-card,.prior-art-section>.chapter-mark,.prior-art-section>.section-intro,.experiment-card,.resolution-section>.chapter-mark,.resolution-section>h2,.resolution-section>p,.clipboard-lab>.chapter-mark,.lab-intro,.copy-deck,.clipboard-results,.feedback-copy,.feedback-terminal,.final-cta>img,.final-cta>h2,.final-cta>p,.final-cta>.button",
     );
     const scenes = [...leftScenes, ...rightScenes, ...upwardScenes];
 
@@ -211,8 +352,96 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const syncVisibility = () => document.body.classList.toggle("page-hidden", document.hidden);
+    syncVisibility();
+    document.addEventListener("visibilitychange", syncVisibility);
+    return () => document.removeEventListener("visibilitychange", syncVisibility);
+  }, []);
+
+  useEffect(() => {
+    const sections = [
+      ["enemy", "The clipboard forgot."], ["clipboard-lab", "Evidence retained."], ["journey", "A plan appeared."],
+      ["field-kit", "Toolbelt acquired."], ["privacy", "Business remained yours."], ["cli", "Hatch opened."],
+      ["download", "Release located."], ["listening", "Someone listened."],
+    ] as const;
+    const observers = sections.map(([id, label]) => {
+      const target = document.getElementById(id);
+      if (!target) return null;
+      const observer = new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting)) setTrail(current => current.some(item => item.text === label) ? current : [{ id: trailEntryId.current++, text: label }, ...current].slice(0, 6));
+      }, { threshold: .22 });
+      observer.observe(target);
+      return observer;
+    });
+    return () => observers.forEach(observer => observer?.disconnect());
+  }, []);
+
+  useEffect(() => {
+    let typed = "";
+    const konami = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+    let konamiIndex = 0;
+    const activate = () => {
+      setIrresponsible(value => !value);
+      setToast("Irresponsible mode toggled. Legal has been notified.");
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
+      typed = `${typed}${event.key.toLowerCase()}`.slice(-5);
+      if (typed === "paste") activate();
+      konamiIndex = event.key === konami[konamiIndex] ? konamiIndex + 1 : 0;
+      if (konamiIndex === konami.length) { konamiIndex = 0; activate(); }
+    };
+    const onCopy = (event: Event) => {
+      const detail = (event as CustomEvent<string>).detail;
+      setToast(detail === "Clipboard permission declined. Very on-brand." ? detail : "Pasted noticed. Excellent form.");
+      if (detail && !detail.includes("declined")) setTrail(current => [{ id: trailEntryId.current++, text: detail.replace(/\s+/g, " ").trim() }, ...current].slice(0, 6));
+    };
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("pasted-copy", onCopy);
+    return () => { window.removeEventListener("keydown", onKeyDown); window.removeEventListener("pasted-copy", onCopy); };
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle("irresponsible-mode", irresponsible);
+    return () => document.body.classList.remove("irresponsible-mode");
+  }, [irresponsible]);
+
+  useEffect(() => {
+    let frame = 0;
+    const stopBeforeFooter = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        const footer = document.querySelector("footer");
+        const trailElement = trailRef.current;
+        if (!footer || !trailElement) return;
+        const overlap = Math.max(0, window.innerHeight - footer.getBoundingClientRect().top + 18);
+        trailElement.style.setProperty("--trail-footer-offset", `${-overlap}px`);
+      });
+    };
+    stopBeforeFooter();
+    window.addEventListener("scroll", stopBeforeFooter, { passive: true });
+    window.addEventListener("resize", stopBeforeFooter);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", stopBeforeFooter);
+      window.removeEventListener("resize", stopBeforeFooter);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timeout = window.setTimeout(() => setToast(""), 2400);
+    return () => window.clearTimeout(timeout);
+  }, [toast]);
+
   return (
-    <div className="site-shell">
+    <div className="site-shell" onCopy={() => {
+      const selection = window.getSelection()?.toString();
+      if (selection) window.dispatchEvent(new CustomEvent("pasted-copy", { detail: selection }));
+    }}>
+      <aside ref={trailRef} className="memory-trail" aria-label="Your journey through the page"><strong>CLIPBOARD TRAIL</strong>{trail.map((item, index) => <span key={item.id}><i>0{index + 1}</i><em title={item.text}>{item.text}</em></span>)}</aside>
+      <div className={`site-toast ${toast ? "visible" : ""}`} role="status">{toast}</div>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Pasted home"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a>
         <nav aria-label="Primary navigation">
@@ -269,6 +498,8 @@ export default function App() {
           </div>
         </section>
 
+        <ClipboardCrimeScene />
+
         <section className="guide-section">
           <div className="chapter-mark"><span>02</span><p>Your spirit animal is a clipboard</p></div>
           <div className="guide-statement"><p className="kicker">What happens in the clipboard stays in Pasted</p><h2>Pasted keeps <em>what <br/>your clipboard throws away.</em></h2><p>Pasted is the quiet accomplice between Copy and Paste. It catches what matters, gives it structure, and stays out of the way until you need it. No productivity doctrine. No mandatory cloud. No judgment about the thirty-seven tabs.</p></div>
@@ -323,7 +554,7 @@ export default function App() {
           <div className="chapter-mark"><span>04</span><p>Keep your pants on</p></div>
           <div className="section-intro"><p className="kicker">Go big or go Command-C</p><h2>Tiny toolbelt.<br/><em>Massive tool.</em></h2><p>Use one tool. Or all of them. Your clipboard has no idea what’s coming.</p></div>
           <div className="feature-grid">
-            {features.map(feature => <article className="feature-card" key={feature.title}><span>{feature.icon}</span><h3>{feature.title}</h3><p>{feature.body}</p></article>)}
+            {features.map(feature => <article className={`feature-card feature-${feature.kind}`} key={feature.title}><span>{feature.icon}</span><FeaturePreview kind={feature.kind}/><h3>{feature.title}</h3><p>{feature.body}</p></article>)}
           </div>
         </section>
 
@@ -394,13 +625,16 @@ export default function App() {
           <ReleaseVault />
         </section>
 
+        <FeedbackTerminal />
+
         <section className="final-cta">
           <div className="cell-colony" aria-hidden="true">{Array.from({ length: 14 }, (_, index) => <i key={index} />)}</div>
           <img src="/pasted-mark.svg" alt=""/><h2>Get Pasted tonight.<br/><em>Remember everything tomorrow.</em></h2><p>No matter how many shots you take, Pasted will be there, holding your hair, rubbing your back, and not judging you for your clipboard history.</p><a className="button primary" href="#download">Get Pasted <span>↑</span></a>
         </section>
+
       </main>
 
-      <footer><a className="brand footer-brand" href="#top"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a><p>Made by Triple J Software, Inc. Copy irresponsibly.</p><div><a href={repoUrl}>GitHub</a><a href={`${repoUrl}/releases`}>Releases</a><a href={`${repoUrl}/issues`}>Good at Listening</a></div></footer>
+      <footer><a className="brand footer-brand" href="#top"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a><p>Made by Triple J Software, Inc. Copy irresponsibly.</p><div><button type="button" className="irresponsible-trigger" onClick={() => setIrresponsible(value => !value)}>{irresponsible ? "Act responsibly" : "Do not press"}</button><a href={repoUrl}>GitHub</a><a href={`${repoUrl}/releases`}>Releases</a><a href="#listening">Good at Listening</a></div></footer>
     </div>
   );
 }
