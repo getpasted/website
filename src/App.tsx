@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { CSSProperties } from "react";
 
 const repoUrl = "https://github.com/getpasted/pasted";
 const releasesUrl = `${repoUrl}/releases`;
@@ -180,6 +181,36 @@ function ReleaseVault() {
 }
 
 export default function App() {
+  useEffect(() => {
+    const leftScenes = document.querySelectorAll<HTMLElement>(
+      ".enemy-copy,.guide-statement,.split-copy,.cli-section>div:first-child,.release-copy",
+    );
+    const rightScenes = document.querySelectorAll<HTMLElement>(
+      ".amnesia-machine,.field-note,.privacy-card,.terminal,.release-section>div:last-child",
+    );
+    const upwardScenes = document.querySelectorAll<HTMLElement>(
+      ".feature-section>.chapter-mark,.feature-card,.story-intro>*:not(.kicker),.story-card,.journey-section>.chapter-mark,.journey-card,.prior-art-section>.chapter-mark,.prior-art-section>.section-intro,.experiment-card,.resolution-section>.chapter-mark,.resolution-section>h2,.resolution-section>p,.final-cta>img,.final-cta>h2,.final-cta>p,.final-cta>.button",
+    );
+    const scenes = [...leftScenes, ...rightScenes, ...upwardScenes];
+
+    leftScenes.forEach(scene => scene.classList.add("scroll-reveal", "reveal-left"));
+    rightScenes.forEach(scene => {
+      scene.classList.add("scroll-reveal", "reveal-right");
+      scene.style.setProperty("--reveal-delay", "90ms");
+    });
+    upwardScenes.forEach((scene, index) => {
+      scene.classList.add("scroll-reveal", "reveal-up");
+      scene.style.setProperty("--reveal-delay", `${(index % 4) * 75}ms`);
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => entry.target.classList.toggle("is-visible", entry.isIntersecting));
+    }, { threshold: 0.16, rootMargin: "0px 0px -7%" });
+
+    scenes.forEach(scene => observer.observe(scene));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="site-shell">
       <header className="site-header">
@@ -324,13 +355,13 @@ export default function App() {
               <header><small>Specimen 02</small><span>Dolly</span></header>
               <div className="experiment-visual sheep-line" aria-hidden="true"><i>🐑</i><i>🐑</i><i>🐑</i></div>
               <h3>Version control. But wool.</h3>
-              <p>First successful commit: 1996. Merge request still pending.</p>
+              <p>First successful commit: 1996. Merrrrrrge request still pending.</p>
             </article>
             <article className="experiment-card smith-experiment">
               <header><small>Specimen 03</small><span>Agent Smith</span></header>
               <div className="experiment-visual smith-line" aria-hidden="true"><i>01</i><i>01</i><i>01</i><i>01</i><i>01</i></div>
               <h3>Infinite instances. One dress code.</h3>
-              <p>Enterprise cloning with extremely proprietary sunglasses.</p>
+              <p>Me, me, me. Enterprise cloning with proprietary sunglasses.</p>
             </article>
             <article className="experiment-card copier-experiment">
               <header><small>Specimen 04</small><span>Office copier</span></header>
@@ -345,7 +376,7 @@ export default function App() {
           <div className="chapter-mark"><span>06</span><p>Are you even reading any of this?</p></div>
           <p className="kicker">The future is already here. It just forgot what you copied.</p>
           <h2>Give your memory<br/><em>an API.</em></h2>
-          <p>AI is becoming everything. Everything still needs context. A clipboard that remembers, organizes, transforms, and exposes its history is a very small piece of software with a very large future.</p>
+          <p>AI is becoming everything. Everything still needs context. A clipboard that remembers, organizes, <span className="transform-word" aria-label="transforms">{Array.from("transforms").map((letter, index) => <span className="transform-letter" data-char={letter} aria-hidden="true" style={{ "--char-index": index } as CSSProperties} key={`${letter}-${index}`}>{letter}</span>)}</span>, and exposes its history is a very small piece of software with a very large future.</p>
         </section>
 
         <section className="release-section" id="download">
@@ -357,7 +388,7 @@ export default function App() {
               <article><span>⌘</span><div><strong>macOS</strong><small>Signed and notarized by Apple.</small></div></article>
               <article><span>▣</span><div><strong>Linux</strong><small>AppImage tested on SteamOS.</small></div></article>
               <article><span>#</span><div><strong>Checksums</strong><small>SHA-256 receipts included.</small></div></article>
-              <article><span>⌂</span><div><strong>Local first</strong><small>Your clipboard stays your business.</small></div></article>
+              <article><span>⊞</span><div><strong>Windows</strong><small>Coming eventually. Installing updates.</small></div></article>
             </div>
           </div>
           <ReleaseVault />
@@ -365,7 +396,7 @@ export default function App() {
 
         <section className="final-cta">
           <div className="cell-colony" aria-hidden="true">{Array.from({ length: 14 }, (_, index) => <i key={index} />)}</div>
-          <img src="/pasted-mark.svg" alt=""/><h2>Get Pasted tonight.<br/><em>Remember everything tomorrow.</em></h2><p>No matter how many shots you take, Pasted will be there, holding your hair, rubbing your back, and not judging you for your clipboard history.</p><a className="button primary" href="#download">Get Pasted <span>↓</span></a>
+          <img src="/pasted-mark.svg" alt=""/><h2>Get Pasted tonight.<br/><em>Remember everything tomorrow.</em></h2><p>No matter how many shots you take, Pasted will be there, holding your hair, rubbing your back, and not judging you for your clipboard history.</p><a className="button primary" href="#download">Get Pasted <span>↑</span></a>
         </section>
       </main>
 
