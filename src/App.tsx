@@ -50,6 +50,47 @@ const replicationMessages = [
   "CTRL+C HAS REPRODUCED",
 ];
 
+const irresponsibleMessages = [
+  "Responsibility restored. Nobody saw anything.",
+  "That was clearly labeled.",
+  "You have made another copy of the problem.",
+  "Replication containment is now mostly decorative.",
+  "Clipboard singularity approaching. Great clicking.",
+  "Pasted has pasted Pasted into Pasted.",
+];
+
+const irresponsibleLabels = [
+  "Do not press",
+  "Seriously. Stop.",
+  "This is your second warning",
+  "Please stop helping it",
+  "Absolutely do not press again",
+  "Fine. Put it back.",
+];
+
+const irresponsibleStatuses = [
+  "RESPONSIBLE ENOUGH",
+  "UNAUTHORIZED COPY DETECTED",
+  "PASTE CONTAINMENT UNSTABLE",
+  "REPLICATION LIMIT: LOL",
+  "CLIPBOARD SINGULARITY APPROACHING",
+  "PASTED HAS BECOME SELF-PASTING",
+];
+
+const irresponsibleCopies = [
+  ["7vw", "15vh", "-9deg", "-.4s"], ["79vw", "12vh", "7deg", "-1.8s"],
+  ["14vw", "68vh", "5deg", "-2.7s"], ["87vw", "72vh", "-11deg", "-3.4s"],
+  ["40vw", "8vh", "4deg", "-1.1s"], ["64vw", "83vh", "-5deg", "-2.2s"],
+  ["4vw", "44vh", "12deg", "-3.8s"], ["91vw", "39vh", "-4deg", "-.8s"],
+  ["29vw", "77vh", "-8deg", "-2.9s"], ["72vw", "53vh", "9deg", "-1.5s"],
+  ["48vw", "92vh", "3deg", "-3.1s"], ["54vw", "21vh", "-6deg", "-.2s"],
+  ["21vw", "32vh", "8deg", "-1.3s"], ["83vw", "88vh", "-7deg", "-2.5s"],
+  ["35vw", "56vh", "-4deg", "-3.6s"], ["67vw", "4vh", "11deg", "-.6s"],
+  ["2vw", "91vh", "-10deg", "-2.1s"], ["95vw", "24vh", "5deg", "-3.2s"],
+] as const;
+
+const breachTapeText = "COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY OF A COPY";
+
 function FeaturePreview({ kind }: { kind: string }) {
   if (kind === "history") return <div className="feature-preview preview-history" aria-hidden="true"><i>09:41</i><b>That perfect sentence</b><i>09:38</i><span>The link from earlier</span></div>;
   if (kind === "bins") return <div className="feature-preview preview-bins" aria-hidden="true"><span>🌭 Manual</span><span>💬 Replies</span><span>🔗 Links</span></div>;
@@ -318,7 +359,8 @@ function ReleaseVault() {
 export default function App() {
   const [trail, setTrail] = useState<Array<{ id: number; text: string }>>([{ id: 0, text: "You arrived." }]);
   const [toast, setToast] = useState("");
-  const [irresponsible, setIrresponsible] = useState(false);
+  const [irresponsibleLevel, setIrresponsibleLevel] = useState(0);
+  const irresponsible = irresponsibleLevel > 0;
   const trailRef = useRef<HTMLElement>(null);
   const trailEntryId = useRef(1);
 
@@ -382,8 +424,11 @@ export default function App() {
     const konami = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
     let konamiIndex = 0;
     const activate = () => {
-      setIrresponsible(value => !value);
-      setToast("Irresponsible mode toggled. Legal has been notified.");
+      setIrresponsibleLevel(value => {
+        const next = value === 5 ? 0 : value + 1;
+        setToast(irresponsibleMessages[next]);
+        return next;
+      });
     };
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
@@ -404,8 +449,13 @@ export default function App() {
 
   useEffect(() => {
     document.body.classList.toggle("irresponsible-mode", irresponsible);
-    return () => document.body.classList.remove("irresponsible-mode");
-  }, [irresponsible]);
+    if (irresponsible) document.body.dataset.irresponsible = String(irresponsibleLevel);
+    else delete document.body.dataset.irresponsible;
+    return () => {
+      document.body.classList.remove("irresponsible-mode");
+      delete document.body.dataset.irresponsible;
+    };
+  }, [irresponsible, irresponsibleLevel]);
 
   useEffect(() => {
     let frame = 0;
@@ -440,6 +490,14 @@ export default function App() {
       const selection = window.getSelection()?.toString();
       if (selection) window.dispatchEvent(new CustomEvent("pasted-copy", { detail: selection }));
     }}>
+      {irresponsible && <div className="irresponsible-overlay" aria-hidden="true">
+        <div className="containment-scan" />
+        <div className="copy-storm">{irresponsibleCopies.map(([x, y, rotation, delay], index) => <i key={index} style={{ "--copy-x": x, "--copy-y": y, "--copy-rotation": rotation, "--copy-delay": delay, "--burst-delay": `${index * -.053}s` } as CSSProperties}><span>⌘C</span><b>PASTED</b></i>)}</div>
+        <div className="breach-tape"><div>{[0, 1].map(copy => <span key={copy}>{breachTapeText}</span>)}</div></div>
+        <div className="recursive-pasted-windows">{Array.from({ length: 4 }, (_, index) => <i key={index} style={{ "--recursive-scale": String(1 - index * .14), "--recursive-shift": `${index * 12}px`, "--recursive-drop": `${index * 16}px`, "--recursive-angle": `${(index - 1.5) * 1.2}deg`, "--recursive-delay": `${index * -.7}s` } as CSSProperties}><span><b>● ● ●</b><em>PASTED_{index + 1}.COPY</em></span><strong><img src="/pasted-mark.svg" alt="" /> Pasted</strong><small>THIS WINDOW CONTAINS A SMALLER EMERGENCY</small></i>)}</div>
+        <div className="clipboard-singularity"><i /><i /><i /><strong>⌘C</strong><span>DO NOT PASTE THE EVENT HORIZON</span></div>
+        <div className="containment-status"><span>{String(irresponsibleLevel).padStart(2, "0")}/05</span><strong>{irresponsibleStatuses[irresponsibleLevel]}</strong><em>{"▰".repeat(irresponsibleLevel)}{"▱".repeat(5 - irresponsibleLevel)}</em></div>
+      </div>}
       <aside ref={trailRef} className="memory-trail" aria-label="Your journey through the page"><strong>CLIPBOARD TRAIL</strong>{trail.map((item, index) => <span key={item.id}><i>0{index + 1}</i><em title={item.text}>{item.text}</em></span>)}</aside>
       <div className={`site-toast ${toast ? "visible" : ""}`} role="status">{toast}</div>
       <header className="site-header">
@@ -634,7 +692,11 @@ export default function App() {
 
       </main>
 
-      <footer><a className="brand footer-brand" href="#top"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a><p>Made by Triple J Software, Inc. Copy irresponsibly.</p><div><button type="button" className="irresponsible-trigger" onClick={() => setIrresponsible(value => !value)}>{irresponsible ? "Act responsibly" : "Do not press"}</button><a href={repoUrl}>GitHub</a><a href={`${repoUrl}/releases`}>Releases</a><a href="#listening">Good at Listening</a></div></footer>
+      <footer><a className="brand footer-brand" href="#top"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a><p>Made by Triple J Software, Inc. Copy irresponsibly.</p><div><button type="button" className="irresponsible-trigger" onClick={() => {
+        const next = irresponsibleLevel === 5 ? 0 : irresponsibleLevel + 1;
+        setIrresponsibleLevel(next);
+        setToast(irresponsibleMessages[next]);
+      }}>{irresponsibleLabels[irresponsibleLevel]}</button><a href={repoUrl}>GitHub</a><a href={`${repoUrl}/releases`}>Releases</a><a href="#listening">Good at Listening</a></div></footer>
     </div>
   );
 }
