@@ -17,6 +17,7 @@ import {
 const repoUrl = "https://github.com/getpasted/pasted";
 const releasesUrl = `${repoUrl}/releases`;
 const brewCommand = "brew install --cask getpasted/tap/pasted";
+const backingUrl = "https://buy.stripe.com/5kQbJ16hMeAb4k8fij08g02";
 
 const copycatLayers = [
   ["back-arm", "Back-Arm"],
@@ -1034,8 +1035,11 @@ export default function App() {
             ))}
           </div>
           <div className="covenant-endorsement">
-            <p>If it earns a permanent place in your workflow, please consider endorsing its future.</p>
-            <small>Nothing to unlock. No licensing fees. No ET phone home. Pass GO all you want.</small>
+            <div>
+              <p>If Pasted earns a permanent place in your workflow, put $9.99 behind its future.</p>
+              <small>Nothing to unlock. No license key. No ET phone home. Just useful software—and one more reason to keep making it.</small>
+            </div>
+            <a className="button primary covenant-backing-button" href={backingUrl}>Back Pasted — $9.99 <span>↗</span></a>
           </div>
         </section>
 

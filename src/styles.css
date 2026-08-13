@@ -414,3 +414,14 @@ body[data-irresponsible="5"] .site-shell::before,body[data-irresponsible="5"] .s
 @media (max-width:900px){.covenant-section{padding:48px}.covenant-intro{grid-template-columns:180px 1fr;gap:38px}.copycat-resident-wrap,.copycat-resident{width:180px}.copycat-resident{height:190px}.resident-copycat-rig{left:4px;bottom:8px;width:172px;height:auto}}
 @media (max-width:620px){.covenant-section{width:calc(100% - 30px);margin:105px auto;padding:30px 18px;border-radius:22px}.covenant-section::before{display:none}.covenant-intro{display:flex;flex-direction:column;align-items:flex-start;gap:34px;margin:40px 0}.copycat-resident-wrap{align-self:center}.covenant-intro h2{font-size:43px}.covenant-grid{grid-template-columns:1fr}.covenant-grid article{min-height:0;padding:28px}.covenant-grid h3{margin-top:24px}.covenant-endorsement{padding:28px 24px}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.enemy-copy,.guide-statement,.split-copy,.cli-section>div:first-child,.release-copy,.amnesia-machine,.field-note,.privacy-card,.terminal,.release-section>div:last-child{animation:none!important;opacity:1!important;filter:none!important;transform:none!important}}
+
+.covenant-endorsement{display:flex;align-items:center;justify-content:space-between;gap:34px}
+.covenant-endorsement>div{min-width:0}
+.covenant-endorsement p,.covenant-endorsement small{max-width:720px}
+.covenant-endorsement small{line-height:1.6}
+.covenant-backing-button{flex:0 0 auto;white-space:nowrap}
+
+@media (max-width:620px){
+  .covenant-endorsement{align-items:stretch;flex-direction:column}
+  .covenant-backing-button{width:100%;white-space:normal}
+}

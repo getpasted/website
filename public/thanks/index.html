@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071012" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content="Thank you for backing Pasted." />
+    <link rel="icon" href="/pasted-favicon.svg?v=copycat-3" type="image/svg+xml" />
+    <link rel="canonical" href="https://getpasted.app/thanks/" />
+    <title>You backed Pasted. Excellent form.</title>
+    <style>
+      :root { color-scheme:dark; font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#071012; color:#edf3f1; }
+      * { box-sizing:border-box; }
+      body { min-height:100vh; margin:0; overflow-x:hidden; background:radial-gradient(circle at 72% 28%,rgba(101,230,180,.12),transparent 30%),radial-gradient(circle at 22% 72%,rgba(52,148,255,.08),transparent 28%),#071012; }
+      body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.18; background-image:linear-gradient(rgba(101,230,180,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(101,230,180,.09) 1px,transparent 1px); background-size:54px 54px; mask-image:radial-gradient(circle at center,#000,transparent 72%); }
+      main { position:relative; z-index:1; width:min(1080px,calc(100% - 40px)); min-height:100vh; margin:auto; padding:42px 0; display:grid; grid-template-columns:minmax(280px,430px) minmax(0,1fr); align-items:center; gap:clamp(44px,8vw,108px); }
+      .cat-card { position:relative; aspect-ratio:1; display:grid; place-items:center; overflow:hidden; border:1px solid rgba(101,230,180,.22); border-radius:28%; background:radial-gradient(circle at 50% 42%,rgba(101,230,180,.13),transparent 54%),rgba(5,13,14,.7); box-shadow:28px 28px 0 rgba(52,148,255,.035),0 36px 100px rgba(0,0,0,.42); }
+      .cat-card::after { content:"BACKED BY COPYCAT № 001"; position:absolute; right:0; bottom:28px; left:0; color:#697779; text-align:center; font:700 9px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.18em; }
+      .cat-card img { width:68%; height:74%; object-fit:contain; transform:translateY(-2%); filter:drop-shadow(0 22px 30px rgba(101,230,180,.1)); }
+      .kicker { margin:0 0 22px; color:#65e6b4; font:800 11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.18em; text-transform:uppercase; }
+      h1 { max-width:650px; margin:0; font-size:clamp(52px,7vw,92px); line-height:.92; letter-spacing:-.065em; }
+      h1 em { display:block; color:#65e6b4; font-style:normal; }
+      .lede { max-width:620px; margin:30px 0 0; color:#9aa6a6; font-size:clamp(17px,2vw,21px); line-height:1.7; }
+      .receipt { margin:34px 0; padding:22px 24px; border-left:3px solid #65e6b4; background:rgba(101,230,180,.045); color:#d7e1de; }
+      .receipt strong { display:block; margin-bottom:7px; font-size:16px; }
+      .receipt span { color:#758283; font:700 9px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.12em; text-transform:uppercase; }
+      .actions { display:flex; flex-wrap:wrap; gap:12px; }
+      .button { min-height:56px; padding:0 23px; display:inline-flex; align-items:center; justify-content:center; gap:12px; border:1px solid rgba(255,255,255,.1); border-radius:14px; color:#edf3f1; background:rgba(255,255,255,.035); text-decoration:none; font-weight:750; transition:transform .2s ease,background .2s ease; }
+      .button:hover { transform:translateY(-2px); background:rgba(255,255,255,.065); }
+      .button.primary { border-color:transparent; color:#0d1511; background:linear-gradient(180deg,#7cf0c1,#58d8a4); box-shadow:0 15px 40px rgba(65,216,160,.18); }
+      footer { margin-top:30px; color:#596768; font:700 9px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.1em; text-transform:uppercase; }
+      @media (max-width:760px) { main { min-height:auto; padding:52px 0 70px; grid-template-columns:1fr; gap:50px; } .cat-card { width:min(82vw,380px); margin:auto; } h1 { font-size:clamp(50px,15vw,76px); } .actions { flex-direction:column; } .button { width:100%; } }
+      @media (prefers-reduced-motion:reduce) { .button { transition:none; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="cat-card" aria-hidden="true"><img src="/copycat/copycat.svg" alt="" /></div>
+      <section>
+        <p class="kicker">Payment caught successfully</p>
+        <h1>You backed Pasted.<em>Excellent form.</em></h1>
+        <p class="lede">Nothing has been unlocked because nothing was locked. You simply put real money behind private, local software—and gave us one more reason to keep making it.</p>
+        <div class="receipt"><strong>Your receipt is heading to your inbox.</strong><span>No account created · No license issued · No cat harmed</span></div>
+        <div class="actions">
+          <a class="button primary" href="/#covenant">Return to the copycats <span>↗</span></a>
+          <a class="button" href="https://github.com/getpasted/pasted">Visit GitHub <span>↗</span></a>
+        </div>
+        <footer>Triple J Software, Inc. · Copy irresponsibly.</footer>
+      </section>
+    </main>
+  </body>
+</html>
