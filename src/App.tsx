@@ -1,9 +1,38 @@
 import { useEffect, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, MouseEvent as ReactMouseEvent } from "react";
 
 const repoUrl = "https://github.com/getpasted/pasted";
 const releasesUrl = `${repoUrl}/releases`;
 const brewCommand = "brew install --cask getpasted/tap/pasted";
+
+const copycatLayers = [
+  ["back-arm", "Back-Arm"],
+  ["tail", "Tail"],
+  ["back-leg", "Back-Leg"],
+  ["neck", "Neck"],
+  ["body", "Body"],
+  ["front-leg", "Front-Leg"],
+  ["head", "Head"],
+  ["front-arm", "Front-Arm"],
+] as const;
+
+type CopycatLayer = typeof copycatLayers[number];
+
+const CopycatRig = ({ layers = copycatLayers }: { layers?: readonly CopycatLayer[] }) => (
+  <svg className="copycat-rig-svg" viewBox="0 0 723 890" aria-hidden="true" focusable="false">
+    <g transform="translate(-341.923 -160.282)">
+      {layers.map(([name, id]) => (
+        <g className={`copycat-layer copycat-layer-${name}`} data-copycat-layer={name} key={name}>
+          <use href={`/copycat/copycat.svg#${id}`} />
+          {name === "front-arm" && <circle className="copycat-paw-sensor" cx="397" cy="536" r="28" />}
+        </g>
+      ))}
+    </g>
+  </svg>
+);
+
+const copycatBaseLayers = copycatLayers.filter(([name]) => name !== "front-arm");
+const copycatFrontArmLayer = copycatLayers.filter(([name]) => name === "front-arm");
 
 type DemoClip = { app: string; icon: string; text: string; meta: string; tone: string };
 
@@ -106,12 +135,20 @@ const journey = [
   { number: "03", title: ["Search around.", "Find out."], body: "We made eventually instant. Use search, the HUD, history, or the CLI and bring anything back ready to work." },
 ];
 
+const covenant = [
+  { number: "01", title: "No cloud account", body: "Pasted works without an identity, a sync account, or a hosted copy of your clipboard history. The core workspace lives where you do." },
+  { number: "02", title: "No telemetry", body: "We do not measure engagement, inspect clipboard activity, or teach a dashboard how copycats behave. Your work is not our dataset." },
+  { number: "03", title: "No subscription", body: "Pasted will not rent your own clipboard back to you. If it earns a place in your workflow, support is an endorsement—not an unlock." },
+  { number: "04", title: "Every copycat welcome", body: "Humans use the app. Scripts use the CLI. Automations and agents use the tools you explicitly give them. Everyone shares the same local library." },
+];
+
 function ProductWindow() {
   const [visibleClips, setVisibleClips] = useState(1);
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {
     const interval = window.setInterval(() => {
+      if (document.hidden) return;
       setVisibleClips(current => current >= clips.length ? 1 : current + 1);
       setSelected(0);
     }, 3200);
@@ -180,6 +217,10 @@ function ClipboardCrimeScene() {
   const crimeQueue = useRef(Promise.resolve());
   const copiedReset = useRef<number | undefined>(undefined);
 
+  useEffect(() => () => {
+    if (copiedReset.current !== undefined) window.clearTimeout(copiedReset.current);
+  }, []);
+
   const commitCrime = (snippet: string, index: number) => {
     crimeQueue.current = crimeQueue.current.then(async () => {
       await copyText(snippet);
@@ -220,7 +261,7 @@ function ClipboardCrimeScene() {
           </article>
           <article className="pasted-result">
             <header><span>PASTED</span><b>{pastedHistory.length} REMEMBERED</b></header>
-            {pastedHistory.length === 0 ? <p className="empty-evidence">Suspiciously ready.</p> : <div className="evidence-stack">{pastedHistory.map((item, index) => (
+            {pastedHistory.length === 0 ? <p className="empty-evidence">Ready to an unreasonable degree.</p> : <div className="evidence-stack">{pastedHistory.map((item, index) => (
               <div className="evidence-slot" style={{ "--evidence-index": index } as CSSProperties} key={item.text}><div className="evidence retained"><span>0{pastedHistory.length - index}</span><b className="copy-count">×{item.copies}</b><p>{item.text}</p></div></div>
             ))}</div>}
           </article>
@@ -236,7 +277,7 @@ function FeedbackTerminal() {
   const labels: Record<string, string> = {
     bug: "Something escaped containment",
     idea: "A clipboard-related revelation",
-    love: "Suspiciously positive feedback",
+    love: "Statistically improbable praise",
     emergency: "Existential clipboard emergency",
   };
   const issueUrl = `${repoUrl}/issues/new?title=${encodeURIComponent(`[${kind}] ${message.slice(0, 72) || labels[kind]}`)}&body=${encodeURIComponent(`${message || "Tell us everything. We are good at listening."}\n\n— Sent from getpasted.app`)}`;
@@ -360,19 +401,38 @@ export default function App() {
   const [trail, setTrail] = useState<Array<{ id: number; text: string }>>([{ id: 0, text: "You arrived." }]);
   const [toast, setToast] = useState("");
   const [irresponsibleLevel, setIrresponsibleLevel] = useState(0);
+  const [copycatBursts, setCopycatBursts] = useState<number[]>([]);
   const irresponsible = irresponsibleLevel > 0;
   const trailRef = useRef<HTMLElement>(null);
   const trailEntryId = useRef(1);
+  const copycatBurstId = useRef(1);
+  const copycatBurstTimers = useRef<Map<number, number>>(new Map());
+
+  const copyTheCopycat = (event: ReactMouseEvent<HTMLButtonElement>) => {
+    if (event.target instanceof Element && event.target.closest(".covenant-dangler")) return;
+    const burstId = copycatBurstId.current++;
+    setCopycatBursts(current => [...current.slice(-5), burstId]);
+    const timer = window.setTimeout(() => {
+      setCopycatBursts(current => current.filter(id => id !== burstId));
+      copycatBurstTimers.current.delete(burstId);
+    }, 1150);
+    copycatBurstTimers.current.set(burstId, timer);
+  };
+
+  useEffect(() => () => {
+    copycatBurstTimers.current.forEach(timer => window.clearTimeout(timer));
+    copycatBurstTimers.current.clear();
+  }, []);
 
   useEffect(() => {
     const leftScenes = document.querySelectorAll<HTMLElement>(
-      ".enemy-copy,.guide-statement,.split-copy,.cli-section>div:first-child,.release-copy",
+      ".enemy-copy,.guide-statement,.split-copy,.cli-section>div:first-child,.release-copy,.covenant-intro>div:first-child",
     );
     const rightScenes = document.querySelectorAll<HTMLElement>(
-      ".amnesia-machine,.field-note,.privacy-card,.terminal,.release-section>div:last-child",
+      ".amnesia-machine,.field-note,.privacy-card,.terminal,.release-section>div:last-child,.covenant-intro>div:last-child",
     );
     const upwardScenes = document.querySelectorAll<HTMLElement>(
-      ".feature-section>.chapter-mark,.feature-card,.story-intro>*:not(.kicker),.story-card,.journey-section>.chapter-mark,.journey-card,.prior-art-section>.chapter-mark,.prior-art-section>.section-intro,.experiment-card,.resolution-section>.chapter-mark,.resolution-section>h2,.resolution-section>p,.clipboard-lab>.chapter-mark,.lab-intro,.copy-deck,.clipboard-results,.feedback-copy,.feedback-terminal,.final-cta>img,.final-cta>h2,.final-cta>p,.final-cta>.button",
+      ".feature-section>.chapter-mark,.feature-card,.story-intro,.story-card,.journey-section>.chapter-mark,.journey-card,.covenant-grid,.covenant-endorsement,.prior-art-section>.chapter-mark,.prior-art-section>.section-intro,.experiment-card,.resolution-section>.chapter-mark,.resolution-section>h2,.resolution-section>p,.clipboard-lab>.chapter-mark,.lab-intro,.copy-deck,.clipboard-results,.feedback-copy,.feedback-terminal,.final-cta>img,.final-cta>h2,.final-cta>p,.final-cta>.button",
     );
     const scenes = [...leftScenes, ...rightScenes, ...upwardScenes];
 
@@ -387,11 +447,20 @@ export default function App() {
     });
 
     const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => entry.target.classList.toggle("is-visible", entry.isIntersecting));
-    }, { threshold: 0.16, rootMargin: "0px 0px -7%" });
+      entries.forEach(entry => {
+        if (entry.intersectionRatio >= .2) entry.target.classList.add("is-visible");
+        else if (!entry.isIntersecting || entry.intersectionRatio <= .04) entry.target.classList.remove("is-visible");
+      });
+    }, { threshold: [0, .04, .2], rootMargin: "-12% 0px -12%" });
 
     scenes.forEach(scene => observer.observe(scene));
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      scenes.forEach(scene => {
+        scene.classList.remove("scroll-reveal", "reveal-left", "reveal-right", "reveal-up", "is-visible");
+        scene.style.removeProperty("--reveal-delay");
+      });
+    };
   }, []);
 
   useEffect(() => {
@@ -402,10 +471,287 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const section = document.getElementById("covenant");
+    if (!section || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let pointerX = 0;
+    let pointerY = 0;
+    let frame = 0;
+    const renderMotion = () => {
+      frame = 0;
+      const rect = section.getBoundingClientRect();
+      const screenY = Math.max(-1, Math.min(1, (window.innerHeight / 2 - (rect.top + rect.height / 2)) / window.innerHeight));
+      section.style.setProperty("--dangler-parallax-x", `${pointerX * 10}px`);
+      section.style.setProperty("--dangler-parallax-y", `${pointerY * 4 + screenY * 7}px`);
+    };
+    const scheduleMotion = () => {
+      if (!frame) frame = window.requestAnimationFrame(renderMotion);
+    };
+    const handlePointerMove = (event: PointerEvent) => {
+      pointerX = Math.max(-1, Math.min(1, (event.clientX / window.innerWidth - .5) * 2));
+      pointerY = Math.max(-1, Math.min(1, (event.clientY / window.innerHeight - .5) * 2));
+      scheduleMotion();
+    };
+
+    renderMotion();
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("scroll", scheduleMotion, { passive: true });
+    window.addEventListener("resize", scheduleMotion);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("scroll", scheduleMotion);
+      window.removeEventListener("resize", scheduleMotion);
+    };
+  }, []);
+
+  useEffect(() => {
+    const section = document.getElementById("covenant");
+    const toyElements = Array.from(section?.querySelectorAll<HTMLElement>(".covenant-dangler-motion") ?? []);
+    if (!section || !toyElements.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+    const toys = toyElements.map(element => ({
+      element,
+      angle: 0,
+      angularVelocity: 0,
+      stretch: 0,
+      stretchVelocity: 0,
+      touchingPaw: false,
+      lastImpact: 0,
+      dragging: false,
+      pointerId: -1,
+      baseLength: element.parentElement ? Number.parseFloat(getComputedStyle(element.parentElement).getPropertyValue("--dangler-length")) || 100 : 100,
+      parentRotation: 0,
+      lastDragAngle: 0,
+      lastDragStretch: 0,
+      magneticAngle: 0,
+      magneticStretch: 0,
+      magneticInfluence: 0,
+    }));
+    const pawSensor = section.querySelector<SVGCircleElement>(".copycat-paw-sensor");
+    if (!pawSensor) return;
+    let pointerClientX = -10000;
+    let pointerClientY = -10000;
+    let previousPawX = 0;
+    let previousPawY = 0;
+    let hasPawSample = false;
+    let physicsFrame = 0;
+    let hitEndTimer = 0;
+    let sectionActive = false;
+
+    const animateToys = (timestamp: number) => {
+      if (!sectionActive) {
+        physicsFrame = 0;
+        return;
+      }
+      const pawRect = pawSensor.getBoundingClientRect();
+      const pawX = pawRect.left + pawRect.width / 2;
+      const pawY = pawRect.top + pawRect.height / 2;
+      const pawVelocityX = hasPawSample ? pawX - previousPawX : 0;
+      const pawVelocityY = hasPawSample ? pawY - previousPawY : 0;
+      const pawRadius = Math.max(pawRect.width / 2, 8);
+      previousPawX = pawX;
+      previousPawY = pawY;
+      hasPawSample = true;
+
+      toys.forEach(toy => {
+        if (!toy.dragging) {
+          const magneticClip = toy.element.querySelector("b");
+          let magneticAngleTarget = 0;
+          let magneticStretchTarget = 0;
+          if (magneticClip) {
+            const magneticRect = magneticClip.getBoundingClientRect();
+            const outsideX = Math.max(magneticRect.left - pointerClientX, 0, pointerClientX - magneticRect.right);
+            const outsideY = Math.max(magneticRect.top - pointerClientY, 0, pointerClientY - magneticRect.bottom);
+            const perimeterDistance = Math.hypot(outsideX, outsideY);
+            const rawInfluence = clamp(1 - perimeterDistance / 10, 0, 1);
+            const influenceEase = rawInfluence > toy.magneticInfluence ? .22 : .35;
+            toy.magneticInfluence += (rawInfluence - toy.magneticInfluence) * influenceEase;
+            const parent = toy.element.parentElement;
+            const anchor = parent?.querySelector(".covenant-dangler-anchor");
+            if (parent && anchor instanceof HTMLElement && toy.magneticInfluence > .002) {
+              const anchorRect = anchor.getBoundingClientRect();
+              const anchorX = anchorRect.left + anchorRect.width / 2;
+              const anchorY = anchorRect.top + anchorRect.height / 2;
+              const deltaX = pointerClientX - anchorX;
+              const deltaY = pointerClientY - anchorY;
+              const parentTransform = getComputedStyle(parent).transform;
+              const matrix = parentTransform === "none" ? null : new DOMMatrixReadOnly(parentTransform);
+              const parentRotation = matrix ? Math.atan2(matrix.b, matrix.a) * 180 / Math.PI : 0;
+              const baseLength = Number.parseFloat(getComputedStyle(parent).getPropertyValue("--dangler-length")) || 100;
+              const desiredAngle = clamp(Math.atan2(deltaX, Math.max(8, deltaY)) * 180 / Math.PI + parentRotation, -68, 68);
+              magneticAngleTarget = desiredAngle * toy.magneticInfluence * .32;
+              magneticStretchTarget = clamp(deltaY - baseLength, -3, 36) * toy.magneticInfluence * .22;
+            }
+            if (toy.magneticInfluence > .12) parent?.classList.add("is-magnetized");
+            else if (toy.magneticInfluence < .04) parent?.classList.remove("is-magnetized");
+          } else {
+            toy.magneticInfluence += (0 - toy.magneticInfluence) * .075;
+          }
+          toy.magneticAngle += (magneticAngleTarget - toy.magneticAngle) * .09;
+          toy.magneticStretch += (magneticStretchTarget - toy.magneticStretch) * .09;
+          toy.angularVelocity += (toy.magneticAngle - toy.angle) * .032;
+          toy.angularVelocity *= .88;
+          toy.angle = clamp(toy.angle + toy.angularVelocity, -68, 68);
+          toy.stretchVelocity += (toy.magneticStretch - toy.stretch) * .075;
+          toy.stretchVelocity *= .8;
+          toy.stretch = clamp(toy.stretch + toy.stretchVelocity, 36 - toy.baseLength, 90);
+        }
+        toy.element.style.setProperty("--toy-pointer-angle", `${toy.angle.toFixed(3)}deg`);
+        toy.element.style.setProperty("--toy-render-angle", `${(-toy.angle).toFixed(3)}deg`);
+        toy.element.style.setProperty("--toy-pointer-stretch", `${toy.stretch.toFixed(3)}px`);
+
+        const clip = toy.element.querySelector("b");
+        if (!clip) return;
+        const clipRect = clip.getBoundingClientRect();
+        const closestX = clamp(pawX, clipRect.left - 4, clipRect.right + 4);
+        const closestY = clamp(pawY, clipRect.top - 4, clipRect.bottom + 4);
+        const touchingPaw = Math.hypot(pawX - closestX, pawY - closestY) <= pawRadius;
+        const clipX = clipRect.left + clipRect.width / 2;
+        const clipY = clipRect.top + clipRect.height / 2;
+        const centerDistance = Math.max(1, Math.hypot(clipX - pawX, clipY - pawY));
+        const towardClipSpeed = (
+          pawVelocityX * (clipX - pawX) +
+          pawVelocityY * (clipY - pawY)
+        ) / centerDistance;
+        const impactSpeed = Math.hypot(pawVelocityX, pawVelocityY);
+        if (touchingPaw && impactSpeed > .35 && towardClipSpeed > .15 && timestamp - toy.lastImpact > 2800) {
+          const fallbackDirection = clipX >= pawX ? 1 : -1;
+          const impactDirection = Math.abs(pawVelocityX) > .15 ? Math.sign(pawVelocityX) : fallbackDirection;
+          if (toy.dragging) {
+            const capturedPointerId = toy.pointerId;
+            if (clip instanceof HTMLElement && capturedPointerId >= 0 && clip.hasPointerCapture(capturedPointerId)) {
+              clip.releasePointerCapture(capturedPointerId);
+            }
+            toy.dragging = false;
+            toy.pointerId = -1;
+            toy.element.classList.remove("is-dragging");
+            toy.element.parentElement?.classList.remove("is-grabbed");
+          }
+          toy.angularVelocity += impactDirection * clamp(6 + impactSpeed * .9, 6, 13);
+          toy.stretchVelocity += clamp(2.5 + Math.abs(pawVelocityY) * .55, 2.5, 5);
+          toy.lastImpact = timestamp;
+          toy.element.style.setProperty("--cat-hit-direction", String(impactDirection));
+          window.clearTimeout(hitEndTimer);
+          toy.element.classList.remove("is-cat-hit");
+          void toy.element.offsetWidth;
+          toy.element.classList.add("is-cat-hit");
+          hitEndTimer = window.setTimeout(() => toy.element.classList.remove("is-cat-hit"), 720);
+        }
+        toy.touchingPaw = touchingPaw;
+      });
+      physicsFrame = sectionActive ? window.requestAnimationFrame(animateToys) : 0;
+    };
+
+    const handleToyPointerMove = (event: PointerEvent) => {
+      pointerClientX = event.clientX;
+      pointerClientY = event.clientY;
+    };
+
+    const beginToyDrag = (toy: typeof toys[number], event: PointerEvent) => {
+      const clip = event.currentTarget;
+      const parent = toy.element.parentElement;
+      if (!(clip instanceof HTMLElement) || !parent) return;
+      event.preventDefault();
+      const parentTransform = getComputedStyle(parent).transform;
+      const matrix = parentTransform === "none" ? null : new DOMMatrixReadOnly(parentTransform);
+      toy.dragging = true;
+      toy.pointerId = event.pointerId;
+      toy.baseLength = Number.parseFloat(getComputedStyle(parent).getPropertyValue("--dangler-length")) || 100;
+      toy.parentRotation = matrix ? Math.atan2(matrix.b, matrix.a) * 180 / Math.PI : 0;
+      toy.lastDragAngle = toy.angle;
+      toy.lastDragStretch = toy.stretch;
+      toy.angularVelocity = 0;
+      toy.stretchVelocity = 0;
+      toy.element.classList.add("is-dragging");
+      parent.classList.add("is-grabbed");
+      clip.setPointerCapture(event.pointerId);
+    };
+
+    const moveDraggedToys = (event: PointerEvent) => {
+      toys.forEach(toy => {
+        if (!toy.dragging || toy.pointerId !== event.pointerId) return;
+        const anchor = toy.element.parentElement?.querySelector(".covenant-dangler-anchor");
+        if (!(anchor instanceof HTMLElement)) return;
+        const anchorRect = anchor.getBoundingClientRect();
+        const anchorX = anchorRect.left + anchorRect.width / 2;
+        const anchorY = anchorRect.top + anchorRect.height / 2;
+        const deltaX = event.clientX - anchorX;
+        const deltaY = event.clientY - anchorY;
+        const nextAngle = clamp(Math.atan2(deltaX, Math.max(8, deltaY)) * 180 / Math.PI + toy.parentRotation, -68, 68);
+        const nextStretch = clamp(deltaY - toy.baseLength, 36 - toy.baseLength, 90);
+        toy.angularVelocity = clamp((nextAngle - toy.lastDragAngle) * .7, -16, 16);
+        toy.stretchVelocity = clamp((nextStretch - toy.lastDragStretch) * .45, -8, 8);
+        toy.lastDragAngle = nextAngle;
+        toy.lastDragStretch = nextStretch;
+        toy.angle = nextAngle;
+        toy.stretch = nextStretch;
+      });
+    };
+
+    const releaseDraggedToys = (event: PointerEvent) => {
+      toys.forEach(toy => {
+        if (!toy.dragging || toy.pointerId !== event.pointerId) return;
+        const clip = toy.element.querySelector("b");
+        if (clip instanceof HTMLElement && clip.hasPointerCapture(event.pointerId)) clip.releasePointerCapture(event.pointerId);
+        toy.dragging = false;
+        toy.pointerId = -1;
+        toy.element.classList.remove("is-dragging");
+        toy.element.parentElement?.classList.remove("is-grabbed");
+        toy.element.parentElement?.classList.remove("is-magnetized");
+      });
+    };
+
+    const dragStartHandlers = toys.map(toy => {
+      const clip = toy.element.querySelector("b");
+      const handler = (event: PointerEvent) => beginToyDrag(toy, event);
+      clip?.addEventListener("pointerdown", handler);
+      return { clip, handler };
+    });
+
+    const physicsVisibilityObserver = new IntersectionObserver(entries => {
+      const nextActive = entries.some(entry => entry.isIntersecting);
+      if (nextActive === sectionActive) return;
+      sectionActive = nextActive;
+      hasPawSample = false;
+      if (sectionActive && !physicsFrame) physicsFrame = window.requestAnimationFrame(animateToys);
+      else if (!sectionActive && physicsFrame) {
+        window.cancelAnimationFrame(physicsFrame);
+        physicsFrame = 0;
+      }
+    }, { rootMargin: "200px 0px" });
+    physicsVisibilityObserver.observe(section);
+    window.addEventListener("pointermove", handleToyPointerMove, { passive: true });
+    window.addEventListener("pointermove", moveDraggedToys);
+    window.addEventListener("pointerup", releaseDraggedToys);
+    window.addEventListener("pointercancel", releaseDraggedToys);
+
+    return () => {
+      window.cancelAnimationFrame(physicsFrame);
+      physicsVisibilityObserver.disconnect();
+      window.clearTimeout(hitEndTimer);
+      window.removeEventListener("pointermove", handleToyPointerMove);
+      window.removeEventListener("pointermove", moveDraggedToys);
+      window.removeEventListener("pointerup", releaseDraggedToys);
+      window.removeEventListener("pointercancel", releaseDraggedToys);
+      dragStartHandlers.forEach(({ clip, handler }) => clip?.removeEventListener("pointerdown", handler));
+      toys.forEach(toy => {
+        toy.element.classList.remove("is-cat-hit");
+        toy.element.classList.remove("is-dragging");
+        toy.element.parentElement?.classList.remove("is-grabbed");
+        toy.element.style.removeProperty("--toy-pointer-angle");
+        toy.element.style.removeProperty("--toy-render-angle");
+        toy.element.style.removeProperty("--toy-pointer-stretch");
+      });
+    };
+  }, []);
+
+  useEffect(() => {
     const sections = [
       ["enemy", "The clipboard forgot."], ["clipboard-lab", "Evidence retained."], ["journey", "A plan appeared."],
       ["field-kit", "Toolbelt acquired."], ["privacy", "Business remained yours."], ["cli", "Hatch opened."],
-      ["download", "Release located."], ["listening", "Someone listened."],
+      ["covenant", "Copycat covenant signed."], ["download", "Release located."], ["listening", "Someone listened."],
     ] as const;
     const observers = sections.map(([id, label]) => {
       const target = document.getElementById(id);
@@ -503,7 +849,7 @@ export default function App() {
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Pasted home"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a>
         <nav aria-label="Primary navigation">
-          <a href="#enemy">The enemy</a><a href="#journey">The plan</a><a href="#field-kit">Field kit</a><a href={repoUrl}>GitHub</a>
+          <a href="#enemy">The enemy</a><a href="#journey">The plan</a><a href="#covenant">The covenant</a><a href={repoUrl}>GitHub</a>
         </nav>
         <a className="header-download" href="#download">Get Pasted <span>↓</span></a>
       </header>
@@ -511,14 +857,14 @@ export default function App() {
       <main id="top">
         <section className="hero">
           <div className="hero-copy">
-            <p className="kicker">For humans, robots, scripts, and other copycats</p>
+            <p className="kicker">The private, local clipboard workspace for copycats</p>
             <h1>You have better things<br/><em>to forget about.</em></h1>
-            <p className="hero-lede">Copy it. Forget it. Find it later. That was always the plan. Computers just missed the last part.</p>
+            <p className="hero-lede">Copy it. Forget it. Find it later.<span>One private workspace for humans, scripts, and whatever the machines are calling themselves this week.</span></p>
             <div className="hero-actions">
               <a className="button primary" href="#download"><span className="download-mark">↓</span><span>Get Pasted<small>macOS 13+ and Linux</small></span></a>
               <a className="button secondary" href={repoUrl}>View on GitHub <span>↗</span></a>
             </div>
-            <p className="hero-note">Free and open source. No cover charge.</p>
+            <p className="hero-note">No cloud account. No telemetry. No subscription.</p>
           </div>
           <div className="hero-glow" aria-hidden="true" />
           <div className="hero-specimens" aria-hidden="true">
@@ -594,7 +940,8 @@ export default function App() {
               <header><span>03</span><strong>History</strong><small>Professional overthinker</small></header>
               <div className="story-stage" aria-hidden="true">
                 <div className="history-reel"><i/></div>
-                <div className="history-tape"><span>NOW</span><span>EARLIER</span><span>THAT THING</span></div>
+                <div className="history-tape"><div className="history-tape-track"><span>JUST NOW</span><span>EARLIER</span><span>THAT THING</span><span>JUST NOW</span><span>EARLIER</span><span>THAT THING</span></div></div>
+                <div className="history-reel history-reel-take-up"><i/></div>
               </div>
               <h3>Brings up everything from the past.</h3>
               <p>Usually exhausting. Surprisingly useful when the past contains your perfect sentence.</p>
@@ -626,8 +973,54 @@ export default function App() {
           <div className="terminal"><div className="terminal-bar"><span className="traffic red"/><span className="traffic yellow"/><span className="traffic green"/><small>zsh</small></div><pre><span className="prompt">$</span> pasted copy "https://wordpress.org/download/"<br/><span className="dim">Saved.</span> The web can continue.<br/><br/><span className="prompt">$</span> pasted search "Framework screwdriver"<br/><span className="dim">Found.</span> The laptop you are allowed to open.<br/><br/><span className="prompt">$</span> pasted search "Vollebak Full Metal Jacket"<br/><span className="dim">Found.</span> Tuesday outfit. 11km of copper included. <span className="cursor">▋</span></pre></div>
         </section>
 
+        <section className="covenant-section" id="covenant" aria-labelledby="covenant-title">
+          <div className="chapter-mark">
+            <span>05</span><p>The Copycat Covenant</p>
+            <div className="covenant-danglers" aria-hidden="true">
+              <i className="covenant-dangler covenant-dangler-one"><span className="covenant-dangler-anchor" /><span className="covenant-dangler-motion"><b /></span></i>
+              <i className="covenant-dangler covenant-dangler-two"><span className="covenant-dangler-anchor" /><span className="covenant-dangler-motion"><b /></span></i>
+            </div>
+          </div>
+          <div className="covenant-intro">
+            <div className="copycat-resident-wrap">
+              <button type="button" className={`copycat-resident${copycatBursts.length ? " is-copying-itself" : ""}`} onClick={copyTheCopycat} aria-label="Copy the copycat">
+                {copycatBursts.map(burstId => <span className="copycat-self-copy-burst" key={burstId} aria-hidden="true">
+                  <span className="copycat-self-clone copycat-self-clone-left"><CopycatRig /></span>
+                  <span className="copycat-self-clone copycat-self-clone-right"><CopycatRig /></span>
+                </span>)}
+                {copycatBursts.length > 0 && <strong className="copycat-copy-counter" aria-hidden="true">COPYCATS × {1 + copycatBursts.length * 2}</strong>}
+                <div className="resident-copycat-rig resident-copycat-base" aria-hidden="true">
+                  <CopycatRig layers={copycatBaseLayers} />
+                </div>
+                <i className="covenant-dangler covenant-dangler-three covenant-dangler-main"><span className="covenant-dangler-anchor" /><span className="covenant-dangler-motion"><b /></span></i>
+                <div className="resident-copycat-rig resident-copycat-paw-overlay" aria-hidden="true">
+                  <CopycatRig layers={copycatFrontArmLayer} />
+                </div>
+              </button>
+            </div>
+            <div>
+              <p className="kicker">The cat captures clips. We don’t capture copycats.</p>
+              <h2 id="covenant-title">Works for copycats.<br/><em>Not for corporations.</em></h2>
+              <p>Copycats are people, scripts, automations, and agents. Probably handsome ones, too. They share one private workspace with each other. Nobody else gets a copy—and certainly not us.</p>
+            </div>
+          </div>
+          <div className="covenant-grid">
+            {covenant.map(principle => (
+              <article key={principle.number}>
+                <span>{principle.number}</span>
+                <h3>{principle.title}</h3>
+                <p>{principle.body}</p>
+              </article>
+            ))}
+          </div>
+          <div className="covenant-endorsement">
+            <p>If it earns a permanent place in your workflow, please consider endorsing its future.</p>
+            <small>Nothing to unlock. No licensing fees. No ET phone home. Pass GO all you want.</small>
+          </div>
+        </section>
+
         <section className="prior-art-section">
-          <div className="chapter-mark"><span>05</span><p>Prior art department</p></div>
+          <div className="chapter-mark"><span>06</span><p>Prior art department</p></div>
           <div className="section-intro">
             <p className="kicker">Copying has been working since before computers</p>
             <h2>Nothing is original.<br/><em>We checked.</em></h2>
@@ -662,7 +1055,7 @@ export default function App() {
         </section>
 
         <section className="resolution-section">
-          <div className="chapter-mark"><span>06</span><p>Are you even reading any of this?</p></div>
+          <div className="chapter-mark"><span>07</span><p>Are you even reading any of this?</p></div>
           <p className="kicker">The future is already here. It just forgot what you copied.</p>
           <h2>Give your memory<br/><em>an API.</em></h2>
           <p>AI is becoming everything. Everything still needs context. A clipboard that remembers, organizes, <span className="transform-word" aria-label="transforms">{Array.from("transforms").map((letter, index) => <span className="transform-letter" data-char={letter} aria-hidden="true" style={{ "--char-index": index } as CSSProperties} key={`${letter}-${index}`}>{letter}</span>)}</span>, and exposes its history is a very small piece of software with a very large future.</p>
@@ -670,7 +1063,7 @@ export default function App() {
 
         <section className="release-section" id="download">
           <div className="release-copy">
-            <p className="kicker">The boring part, suspiciously well documented</p>
+            <p className="kicker">The boring part, documented like somebody knew lawyers</p>
             <h2>Download with confidence.<br/><em>Or at least checksums.</em></h2>
             <p>Pasted is open source, keeps its core library on your device, and ships with enough receipts to make a clipboard app look oddly responsible.</p>
             <div className="release-facts">
