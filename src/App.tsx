@@ -1,5 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from "react";
+import {
+  Clipboard,
+  Copy,
+  Disc3,
+  History,
+  ListOrdered,
+  Pause,
+  Pin,
+  Shield,
+  StickyNote,
+  Trash2,
+  Workflow,
+} from "lucide-react";
 
 const repoUrl = "https://github.com/getpasted/pasted";
 const releasesUrl = `${repoUrl}/releases`;
@@ -34,7 +47,7 @@ const CopycatRig = ({ layers = copycatLayers }: { layers?: readonly CopycatLayer
 const copycatBaseLayers = copycatLayers.filter(([name]) => name !== "front-arm");
 const copycatFrontArmLayer = copycatLayers.filter(([name]) => name === "front-arm");
 
-type DemoClip = { app: string; icon: string; text: string; meta: string; tone: string };
+type DemoClip = { app: string; icon: string; text: string; meta: string; tone: string; type?: string };
 
 type ReleaseAsset = { name: string; browser_download_url: string };
 type PublicRelease = {
@@ -48,8 +61,11 @@ type PublicRelease = {
 
 const clips: DemoClip[] = [
   { app: "Safari", icon: "↗", text: "getpasted.app", meta: "just now", tone: "blue" },
-  { app: "Terminal", icon: ">_", text: "npm run tauri dev", meta: "2 min", tone: "mint" },
+  { app: "Terminal", icon: ">_", text: "pasted search \"that thing\" --json", meta: "2 min", tone: "mint" },
   { app: "Notes", icon: "Aa", text: "Everything you copy, ready when you need it.", meta: "8 min", tone: "amber" },
+  { app: "Finder", icon: "◫", text: "copycat-final-final.svg", meta: "14 min", tone: "blue", type: "File" },
+  { app: "Messages", icon: "…", text: "No cloud account. No telemetry. No subscription.", meta: "22 min", tone: "mint" },
+  { app: "Xcode", icon: "{ }", text: "clipboard_monitor.start()", meta: "31 min", tone: "blue" },
 ];
 
 const copyText = async (text: string) => {
@@ -143,19 +159,19 @@ const covenant = [
 ];
 
 function ProductWindow() {
-  const [visibleClips, setVisibleClips] = useState(1);
+  const [visibleClips, setVisibleClips] = useState(3);
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {
     const interval = window.setInterval(() => {
       if (document.hidden) return;
-      setVisibleClips(current => current >= clips.length ? 1 : current + 1);
+      setVisibleClips(current => current >= clips.length ? 3 : current + 1);
       setSelected(0);
     }, 3200);
     return () => window.clearInterval(interval);
   }, []);
 
-  const shownClips = clips.slice(0, visibleClips).reverse();
+  const shownClips = clips.slice(0, visibleClips);
   const activeClip = shownClips[selected] ?? shownClips[0];
 
   return (
@@ -167,17 +183,19 @@ function ProductWindow() {
       <div className="product-grid">
         <aside className="app-sidebar">
           <p className="eyebrow">Clips</p>
-          <div className="nav-item active"><span>▣</span> History <b>248</b></div>
-          <div className="nav-item"><span>≣</span> Queue</div>
-          <div className="nav-item pin"><span>⌖</span> Pinned <b>4</b></div>
-          <div className="nav-item protect"><span>♢</span> Protected</div>
+          <div className="nav-item active"><span><Clipboard /></span> History <b>248</b></div>
+          <div className="nav-item"><span><ListOrdered /></span> Queue</div>
+          <div className="nav-item pin"><span><Pin /></span> Pinned <b>4</b></div>
+          <div className="nav-item protect"><span><Shield /></span> Protected</div>
+          <div className="nav-item noted"><span><StickyNote /></span> Noted <b>3</b></div>
+          <div className="nav-item trashed"><span><Trash2 /></span> Trashed</div>
           <p className="eyebrow bins">Bins</p>
           <div className="nav-item"><span>💬</span> Canned Replies</div>
           <div className="nav-item"><span>💻</span> Code Snippets <b>12</b></div>
           <div className="nav-item"><span>🔗</span> Links &amp; Web</div>
         </aside>
         <section className="clip-list">
-          <div className="list-head"><strong>HISTORY</strong><span>◫ &nbsp; ◎</span></div>
+          <div className="list-head"><div><Clipboard /><strong>HISTORY</strong></div><span><Pause /><Disc3 /></span></div>
           <div className="clip-stack">
             {shownClips.map((clip, index) => (
               <button type="button" className={`clip-card ${index === selected ? "selected" : ""}`} key={`${visibleClips}-${clip.app}`} onClick={() => setSelected(index)}>
@@ -189,16 +207,18 @@ function ProductWindow() {
           </div>
         </section>
         <section className="clip-preview">
-          <div className="preview-head"><span className="type-pill">Text</span><strong>{activeClip.app}</strong><span className="preview-actions">⌘ &nbsp; ◫ &nbsp; ♡</span></div>
+          <div className="preview-head"><span className="type-pill">{activeClip.type ?? "Text"}</span><strong>{activeClip.app}</strong><span className="preview-actions"><Workflow /><Copy /><Pin /><Shield /><StickyNote /><Trash2 /></span></div>
           <div className="preview-body">
             <div className="preview-label">CLIP CONTENT</div>
             <p>{activeClip.text}</p>
-            <div className="note"><span>✦</span><div><strong>Ready for later.</strong><small>Saved automatically from {activeClip.app}</small></div></div>
           </div>
           <div className="preview-meta"><span>CHARS<br/><b>{activeClip.text.length}</b></span><span>WORDS<br/><b>{activeClip.text.split(/\s+/).length}</b></span><span>CAPTURED<br/><b>{activeClip.meta}</b></span></div>
         </section>
       </div>
-      <div className="capture-signal" aria-live="polite"><span>+</span> Captured without making a scene</div>
+      <div className="capture-signal" aria-live="polite" key={`ready-${activeClip.app}`}>
+        <span><History /></span>
+        <div><strong>Ready for later.</strong><small>Captured automatically from {activeClip.app}</small></div>
+      </div>
     </div>
   );
 }
