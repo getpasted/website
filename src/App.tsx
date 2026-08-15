@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 const repoUrl = "https://github.com/getpasted/pasted";
+const docsUrl = `${repoUrl}/wiki`;
 const releasesUrl = `${repoUrl}/releases`;
 const brewCommand = "brew install --cask getpasted/tap/pasted";
 const backingUrl = "https://buy.stripe.com/5kQbJ16hMeAb4k8fij08g02";
@@ -82,7 +83,7 @@ const features = [
   { kind: "history", icon: "⌘", title: "History", body: "Remember exactly what you forgot using the half-remembered bit still rattling around your head." },
   { kind: "bins", icon: "▦", title: "Bins", body: "Put everything in its place without having to remember where that place is." },
   { kind: "transforms", icon: "✦", title: "Transforms", body: "Turn unruly text into clean Markdown, reshaped data, or something intelligence has had a word with." },
-  { kind: "files", icon: "◫", title: "File Types", body: "Keep screenshots, PDFs, images, text, links, and files together. No hangover folder required." },
+  { kind: "analysis", icon: "◎", title: "Analysis", body: "Make images and audio searchable with local OCR and transcription, then classify useful Content Types." },
   { kind: "cli", icon: "›_", title: "CLI", body: "The GUI points and clicks. The CLI pipes, scripts, and generally gets carried away." },
   { kind: "sqlite", icon: "◎", title: "SQLite", body: "Your core library lives on your machine. The cloud is where it doesn’t." },
 ];
@@ -141,7 +142,7 @@ function FeaturePreview({ kind }: { kind: string }) {
   if (kind === "history") return <div className="feature-preview preview-history" aria-hidden="true"><i>09:41</i><b>That perfect sentence</b><i>09:38</i><span>The link from earlier</span></div>;
   if (kind === "bins") return <div className="feature-preview preview-bins" aria-hidden="true"><span>🌭 Manual</span><span>💬 Replies</span><span>🔗 Links</span></div>;
   if (kind === "transforms") return <div className="feature-preview preview-transforms" aria-hidden="true"><code>messy text</code><i>✦</i><code>**clean text**</code></div>;
-  if (kind === "files") return <div className="feature-preview preview-files" aria-hidden="true"><span>PDF</span><span>IMG</span><span>TXT</span><span>URL</span></div>;
+  if (kind === "analysis") return <div className="feature-preview preview-analysis" aria-hidden="true"><span>OCR</span><span>AUDIO</span><span>URL</span><span>EMAIL</span></div>;
   if (kind === "cli") return <div className="feature-preview preview-cli" aria-hidden="true"><code><b>$</b> pasted search "that thing"</code><small>Found. Obviously.</small></div>;
   return <div className="feature-preview preview-sqlite" aria-hidden="true"><span>clips</span><span>bins</span><span>revisions</span><i>LOCAL</i></div>;
 }
@@ -870,7 +871,7 @@ export default function App() {
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Pasted home"><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a>
         <nav aria-label="Primary navigation">
-          <a href="#enemy">The enemy</a><a href="#journey">The plan</a><a href="#covenant">The covenant</a><a href={repoUrl}>GitHub</a>
+          <a href="#enemy">The enemy</a><a href="#journey">The plan</a><a href="#covenant">The covenant</a><a href={docsUrl}>Docs</a><a href={repoUrl}>GitHub</a>
         </nav>
         <a className="header-download" href="#download">Get Pasted <span>↓</span></a>
       </header>
@@ -1094,7 +1095,7 @@ export default function App() {
               <article><span>⌘</span><div><strong>macOS</strong><small>Signed and notarized by Apple.</small></div></article>
               <article><span>▣</span><div><strong>Linux</strong><small>AppImage tested on SteamOS.</small></div></article>
               <article><span>#</span><div><strong>Checksums</strong><small>SHA-256 receipts included.</small></div></article>
-              <article><span>⊞</span><div><strong>Windows</strong><small>Coming eventually. Installing updates.</small></div></article>
+              <article><span>⊞</span><div><strong>Windows</strong><small>Experimental builds available.</small></div></article>
             </div>
           </div>
           <ReleaseVault />
@@ -1113,7 +1114,7 @@ export default function App() {
         const next = irresponsibleLevel === 5 ? 0 : irresponsibleLevel + 1;
         setIrresponsibleLevel(next);
         setToast(irresponsibleMessages[next]);
-      }}>{irresponsibleLabels[irresponsibleLevel]}</button><a href={repoUrl}>GitHub</a><a href={`${repoUrl}/releases`}>Releases</a><a href="#listening">Good at Listening</a></div></footer>
+      }}>{irresponsibleLabels[irresponsibleLevel]}</button><a href={docsUrl}>Docs</a><a href={repoUrl}>GitHub</a><a href={`${repoUrl}/releases`}>Releases</a><a href="#listening">Good at Listening</a></div></footer>
     </div>
   );
 }
