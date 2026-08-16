@@ -18,7 +18,7 @@ const repoUrl = "https://github.com/getpasted/pasted";
 const docsUrl = `${repoUrl}/wiki`;
 const releasesUrl = `${repoUrl}/releases`;
 const brewCommand = "brew install --cask getpasted/tap/pasted";
-const backingUrl = "https://buy.stripe.com/5kQbJ16hMeAb4k8fij08g02";
+const backingUrl = "https://back.getpasted.app";
 
 const copycatLayers = [
   ["back-arm", "Back-Arm"],
