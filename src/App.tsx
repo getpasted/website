@@ -13,6 +13,8 @@ import {
   Trash2,
   Workflow,
 } from "lucide-react";
+import { selectPublicRelease } from "./releases";
+import type { PublicRelease } from "./releases";
 
 const repoUrl = "https://github.com/getpasted/pasted";
 const docsUrl = `${repoUrl}/wiki`;
@@ -50,16 +52,6 @@ const copycatBaseLayers = copycatLayers.filter(([name]) => name !== "front-arm")
 const copycatFrontArmLayer = copycatLayers.filter(([name]) => name === "front-arm");
 
 type DemoClip = { app: string; icon: string; text: string; meta: string; tone: string; type?: string };
-
-type ReleaseAsset = { name: string; browser_download_url: string };
-type PublicRelease = {
-  name: string | null;
-  tag_name: string;
-  html_url: string;
-  prerelease: boolean;
-  draft: boolean;
-  assets: ReleaseAsset[];
-};
 
 const clips: DemoClip[] = [
   { app: "Safari", icon: "↗", text: "getpasted.app", meta: "just now", tone: "blue" },
@@ -337,7 +329,7 @@ function ReleaseVault() {
       signal: controller.signal,
     })
       .then(response => response.ok ? response.json() as Promise<PublicRelease[]> : Promise.reject())
-      .then(releases => setRelease(releases.find(item => !item.draft) ?? false))
+      .then(releases => setRelease(selectPublicRelease(releases) ?? false))
       .catch(error => {
         if (error?.name !== "AbortError") setRelease(false);
       });
@@ -883,7 +875,7 @@ export default function App() {
             <h1>You have better things<br/><em>to forget about.</em></h1>
             <p className="hero-lede">Copy it. Forget it. Find it later.<span>One private workspace for humans, scripts, and whatever the machines are calling themselves this week.</span></p>
             <div className="hero-actions">
-              <a className="button primary" href="#download"><span className="download-mark">↓</span><span>Get Pasted<small>macOS 13+ and Linux</small></span></a>
+              <a className="button primary" href="#download"><span className="download-mark">↓</span><span>Get Pasted<small>macOS 13+ · Linux preview</small></span></a>
               <a className="button secondary" href={repoUrl}>View on GitHub <span>↗</span></a>
             </div>
             <p className="hero-note">No cloud account. No telemetry. No subscription.</p>
@@ -1114,7 +1106,7 @@ export default function App() {
         const next = irresponsibleLevel === 5 ? 0 : irresponsibleLevel + 1;
         setIrresponsibleLevel(next);
         setToast(irresponsibleMessages[next]);
-      }}>{irresponsibleLabels[irresponsibleLevel]}</button><a href={docsUrl}>Docs</a><a href={repoUrl}>GitHub</a><a href={`${repoUrl}/releases`}>Releases</a><a href="#listening">Good at Listening</a></div></footer>
+      }}>{irresponsibleLabels[irresponsibleLevel]}</button><a href="/features/">Features</a><a href="/cli/">CLI</a><a href="/privacy/">Privacy</a><a href="/download/">Downloads</a><a href={docsUrl}>Docs</a><a href={repoUrl}>GitHub</a><a href="#listening">Good at Listening</a></div></footer>
     </div>
   );
 }

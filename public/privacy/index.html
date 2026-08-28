@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#111418" />
+    <meta name="description" content="How Pasted keeps clipboard history local, avoids product telemetry, bounds optional connections, and handles website hosting." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://getpasted.app/privacy/" />
+    <link rel="icon" href="/pasted-favicon.svg?v=copycat-3" type="image/svg+xml" />
+    <link rel="stylesheet" href="/seo.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Pasted Privacy — Your Business Is None of Ours" />
+    <meta property="og:description" content="Local clipboard storage, no product telemetry, and explicit optional connections." />
+    <meta property="og:url" content="https://getpasted.app/privacy/" />
+    <meta property="og:image" content="https://getpasted.app/og.png" />
+    <title>Pasted Privacy — Local Clipboard History, No Telemetry</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/"><img src="/pasted-mark.svg" alt="" />Pasted</a>
+      <nav aria-label="Primary navigation"><a href="/features/">Features</a><a href="/download/">Download</a><a href="/cli/">CLI</a><a href="/privacy/">Privacy</a></nav>
+    </header>
+    <main>
+      <p class="kicker">What happens on the computer stays on the computer</p>
+      <h1>Your business is none of ours.</h1>
+      <p class="lede">Pasted is designed around a local library, explicit connections, bounded diagnostics, and useful behavior that does not require an account.</p>
+      <div class="grid">
+        <article class="card"><h2>Clipboard data stays local</h2><p>The core clipboard library is stored in SQLite on the device. Pasted does not host or synchronize a copy of clipboard history.</p></article>
+        <article class="card"><h2>No product telemetry</h2><p>The app does not measure engagement, inspect clipboard activity for analytics, or send clipboard contents to a product analytics service.</p></article>
+        <article class="card"><h2>Optional connections are explicit</h2><p>User-configured intelligence providers and operations may contact outside services only when enabled and invoked. Their scope and credentials remain visible and controllable.</p></article>
+        <article class="card"><h2>Sensitive material stays out of Activity</h2><p>Activity records use neutral identifiers and counts. Clipboard contents, transformation input, credentials, and sensitive file details are excluded.</p></article>
+        <article class="card wide"><h2>This website</h2><p>getpasted.app is a static site hosted by GitHub Pages. Pasted does not install a visitor analytics script, advertising tracker, or tracking cookie. GitHub states that Pages visitor IP addresses are logged for security purposes under GitHub’s own privacy practices.</p></article>
+      </div>
+      <div class="button-row"><a class="button primary" href="https://github.com/getpasted/pasted/wiki/Privacy-Security-and-Safety">Read the security documentation</a><a class="button" href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub privacy statement</a></div>
+    </main>
+    <footer><span>Triple J Software, Inc. · Copy irresponsibly.</span><div><a href="/">Home</a><a href="https://github.com/getpasted/pasted">Source code</a></div></footer>
+  </body>
+</html>

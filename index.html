@@ -7,10 +7,11 @@
     <meta name="color-scheme" content="dark" />
     <meta name="application-name" content="Pasted" />
     <meta name="apple-mobile-web-app-title" content="Pasted" />
-    <meta name="description" content="The private, local clipboard workspace for copycats. One shared library for humans, scripts, automations, and agents. No cloud account. No telemetry. No subscription." />
+    <meta name="description" content="Pasted is a private, local clipboard manager for macOS with searchable history, OCR, transcription, automation, a CLI, and Linux preview builds." />
     <meta name="author" content="Triple J Software, Inc." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://getpasted.app/" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <link rel="icon" href="/pasted-favicon.svg?v=copycat-3" type="image/svg+xml" />
 
     <meta property="og:type" content="website" />
@@ -27,32 +28,54 @@
     <meta name="twitter:title" content="Pasted — You have better things to forget about." />
     <meta name="twitter:description" content="The private, local clipboard workspace for copycats. No cloud account. No telemetry. No subscription." />
     <meta name="twitter:image" content="https://getpasted.app/og.png" />
+    <meta name="twitter:image:alt" content="Pasted — You have better things to forget about." />
 
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "Pasted",
-        "description": "The private, local clipboard workspace for humans, scripts, automations, agents, and other copycats.",
-        "url": "https://getpasted.app/",
-        "downloadUrl": "https://github.com/getpasted/pasted/releases",
-        "codeRepository": "https://github.com/getpasted/pasted",
-        "license": "https://github.com/getpasted/pasted/blob/main/LICENSE",
-        "applicationCategory": "UtilitiesApplication",
-        "operatingSystem": "macOS, Linux",
-        "featureList": [
-          "Private local clipboard history",
-          "Searchable OCR and audio transcription",
-          "Content Type classification",
-          "GUI and command-line interfaces"
-        ],
-        "author": {
-          "@type": "Organization",
-          "name": "Triple J Software, Inc."
-        }
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://getpasted.app/#website",
+            "name": "Pasted",
+            "url": "https://getpasted.app/"
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://getpasted.app/#software",
+            "name": "Pasted",
+            "description": "A private, local clipboard manager with searchable history, organization, automation, and a command-line interface.",
+            "url": "https://getpasted.app/",
+            "image": "https://getpasted.app/og.png",
+            "downloadUrl": "https://github.com/getpasted/pasted/releases",
+            "releaseNotes": "https://github.com/getpasted/pasted/blob/main/docs/RELEASE_NOTES_1.0.0.md",
+            "softwareVersion": "1.0.0",
+            "softwareRequirements": "macOS 13 or newer on Apple Silicon or Intel; Linux x86_64 preview builds are also available.",
+            "codeRepository": "https://github.com/getpasted/pasted",
+            "license": "https://github.com/getpasted/pasted/blob/main/LICENSE",
+            "applicationCategory": "UtilitiesApplication",
+            "operatingSystem": "macOS 13 or newer",
+            "isAccessibleForFree": true,
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "featureList": [
+              "Private local clipboard history",
+              "Searchable OCR and audio transcription",
+              "Content Type classification",
+              "GUI and command-line interfaces"
+            ],
+            "author": {
+              "@type": "Organization",
+              "name": "Triple J Software, Inc."
+            }
+          }
+        ]
       }
     </script>
-    <title>Pasted — You have better things to forget about.</title>
+    <title>Pasted — Private, Local Clipboard Manager for macOS</title>
   </head>
   <body>
     <div id="root"></div>
