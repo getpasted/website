@@ -4,6 +4,7 @@ import { selectPublicRelease } from "./releases";
 import type { PublicRelease } from "./releases";
 import { ProductWindow } from "./ProductWindow";
 import { CliTerminal } from "./CliTerminal";
+import { FeatureWorkbench } from "./FeatureWorkbench";
 
 const repoUrl = "https://github.com/getpasted/pasted";
 const docsUrl = `${repoUrl}/wiki`;
@@ -993,6 +994,8 @@ export default function App() {
             {features.map(feature => <article className={`feature-card feature-${feature.kind}`} key={feature.title}><span>{feature.icon}</span><FeaturePreview kind={feature.kind}/><h3>{feature.title}</h3><p>{feature.body}</p></article>)}
           </div>
         </section>
+
+        <FeatureWorkbench/>
 
         <section className="split-section" id="privacy">
           <div className="split-copy"><p className="kicker">What happens on your computer stays on your computer</p><h2>There’s no place<br/><em>like ~/.</em></h2><p>Clipboard history can contain passwords, code, medical forms, terrible first drafts, and the address of the surprise party. Pasted keeps its core library local and makes every outside connection your decision.</p><ul><li><span>✓</span> Local SQLite library</li><li><span>✓</span> Optional AI connections</li><li><span>✓</span> Import, export, and reset controls</li></ul></div>
