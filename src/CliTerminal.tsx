@@ -19,15 +19,6 @@ export function CliTerminal() {
   const runTimer = useRef<number | undefined>(undefined);
   const copiedTimer = useRef<number | undefined>(undefined);
 
-  useEffect(() => {
-    const selectClip = (event: Event) => {
-      const nextId = (event as CustomEvent<{ id?: string }>).detail?.id;
-      if (nextId && demoClips.some(clip => clip.id === nextId)) setClipId(nextId);
-    };
-    window.addEventListener("pasted-demo-clip-selected", selectClip);
-    return () => window.removeEventListener("pasted-demo-clip-selected", selectClip);
-  }, []);
-
   useEffect(() => () => {
     window.clearTimeout(runTimer.current);
     window.clearTimeout(copiedTimer.current);
@@ -93,10 +84,7 @@ export function CliTerminal() {
     }
   };
 
-  const showInApp = () => {
-    window.dispatchEvent(new CustomEvent("pasted-demo-select-clip", { detail: { id: clip.id } }));
-    document.querySelector(".product-window")?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
+  const nextExample = () => setClipId(demoClips[(clipNumber + 10) % demoClips.length].id);
 
   return (
     <div className="terminal live-terminal" aria-label="Interactive Pasted command line preview">
@@ -116,8 +104,8 @@ export function CliTerminal() {
         </pre>
       </div>
       <div className="terminal-link">
-        <span><b>{bin.icon} {bin.name}</b><small>Following the selected clip in the app mock above.</small></span>
-        <button type="button" onClick={showInApp}>SHOW IN APP ↑</button>
+        <span><b>{bin.icon} {bin.name}</b><small>Real commands. Fictional research program.</small></span>
+        <button type="button" onClick={nextExample}>NEXT EXAMPLE →</button>
       </div>
     </div>
   );

@@ -2,9 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent, RefObject } from "react";
 import { selectPublicRelease } from "./releases";
 import type { PublicRelease } from "./releases";
-import { ProductWindow } from "./ProductWindow";
 import { CliTerminal } from "./CliTerminal";
-import { FeatureWorkbench } from "./FeatureWorkbench";
+import { AppCaptureShowcase } from "./AppCaptureShowcase";
 
 const repoUrl = "https://github.com/getpasted/pasted";
 const docsUrl = `${repoUrl}/wiki`;
@@ -907,7 +906,7 @@ export default function App() {
             <span className="specimen specimen-c">CLONE VERIFIED</span>
             <span className="specimen specimen-d">⌘C → ⌘V</span>
           </div>
-          <ProductWindow />
+          <AppCaptureShowcase hero/>
         </section>
 
         <section className="trust-line" aria-label="Pasted qualities">
@@ -995,7 +994,11 @@ export default function App() {
           </div>
         </section>
 
-        <FeatureWorkbench/>
+        <section className="actual-app-section" id="inside-the-app">
+          <div className="chapter-mark"><span>05</span><p>The actual application</p></div>
+          <div className="section-intro"><p className="kicker">No artist’s impression</p><h2>This is Pasted.<br/><em>Go ahead. Pixel-peep it.</em></h2><p>Every screen below was captured directly from the real Pasted interface. Click through History, Smart Bins, Functionality, Storage, App Lock, Transforms, and Insights.</p></div>
+          <AppCaptureShowcase/>
+        </section>
 
         <section className="split-section" id="privacy">
           <div className="split-copy"><p className="kicker">What happens on your computer stays on your computer</p><h2>There’s no place<br/><em>like ~/.</em></h2><p>Clipboard history can contain passwords, code, medical forms, terrible first drafts, and the address of the surprise party. Pasted keeps its core library local and makes every outside connection your decision.</p><ul><li><span>✓</span> Local SQLite library</li><li><span>✓</span> Optional AI connections</li><li><span>✓</span> Import, export, and reset controls</li></ul></div>
