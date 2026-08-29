@@ -1,20 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import type { CSSProperties, MouseEvent as ReactMouseEvent } from "react";
-import {
-  Clipboard,
-  Copy,
-  Disc3,
-  History,
-  ListOrdered,
-  Pause,
-  Pin,
-  Shield,
-  StickyNote,
-  Trash2,
-  Workflow,
-} from "lucide-react";
+import type { CSSProperties, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent, RefObject } from "react";
 import { selectPublicRelease } from "./releases";
 import type { PublicRelease } from "./releases";
+import { ProductWindow } from "./ProductWindow";
 
 const repoUrl = "https://github.com/getpasted/pasted";
 const docsUrl = `${repoUrl}/wiki`;
@@ -50,17 +38,6 @@ const CopycatRig = ({ layers = copycatLayers }: { layers?: readonly CopycatLayer
 
 const copycatBaseLayers = copycatLayers.filter(([name]) => name !== "front-arm");
 const copycatFrontArmLayer = copycatLayers.filter(([name]) => name === "front-arm");
-
-type DemoClip = { app: string; icon: string; text: string; meta: string; tone: string; type?: string };
-
-const clips: DemoClip[] = [
-  { app: "Safari", icon: "↗", text: "getpasted.app", meta: "just now", tone: "blue" },
-  { app: "Terminal", icon: ">_", text: "pasted search \"that thing\" --json", meta: "2 min", tone: "mint" },
-  { app: "Notes", icon: "Aa", text: "Everything you copy, ready when you need it.", meta: "8 min", tone: "amber" },
-  { app: "Finder", icon: "◫", text: "copycat-final-final.svg", meta: "14 min", tone: "blue", type: "File" },
-  { app: "Messages", icon: "…", text: "No cloud account. No telemetry. No subscription.", meta: "22 min", tone: "mint" },
-  { app: "Xcode", icon: "{ }", text: "clipboard_monitor.start()", meta: "31 min", tone: "blue" },
-];
 
 const copyText = async (text: string) => {
   try {
@@ -107,6 +84,111 @@ const irresponsibleLabels = [
   "Fine. Put it back.",
 ];
 
+const pointerAngle = (event: ReactPointerEvent<HTMLButtonElement>) => {
+  const rect = event.currentTarget.getBoundingClientRect();
+  return Math.atan2(event.clientY - (rect.top + rect.height / 2), event.clientX - (rect.left + rect.width / 2));
+};
+
+const normalizedAngleDelta = (next: number, previous: number) => {
+  let delta = next - previous;
+  if (delta > Math.PI) delta -= Math.PI * 2;
+  if (delta < -Math.PI) delta += Math.PI * 2;
+  return delta / (Math.PI * 2);
+};
+
+type ScratchAnimation = {
+  delay: number;
+  duration: number;
+  element: HTMLElement;
+};
+
+const cssTimeToMilliseconds = (value: string) => {
+  const firstValue = value.split(",")[0]?.trim() ?? "0s";
+  return firstValue.endsWith("ms") ? Number.parseFloat(firstValue) : Number.parseFloat(firstValue) * 1000;
+};
+
+const ScratchableHistoryRecord = ({ timelineRef }: { timelineRef: RefObject<HTMLDivElement | null> }) => {
+  const [scratching, setScratching] = useState(false);
+  const isScratching = useRef(false);
+  const lastAngle = useRef(0);
+  const timelineAnimations = useRef<ScratchAnimation[]>([]);
+
+  const moveTimeline = (turns: number) => {
+    timelineAnimations.current.forEach(animation => {
+      animation.delay -= turns * animation.duration;
+      animation.element.style.animationDelay = `${animation.delay}ms`;
+    });
+  };
+
+  useEffect(() => {
+    const resumeTimeline = () => {
+      if (!isScratching.current) return;
+      isScratching.current = false;
+      timelineAnimations.current.forEach(animation => { animation.element.style.animationPlayState = "running"; });
+      setScratching(false);
+    };
+    window.addEventListener("pointerup", resumeTimeline);
+    window.addEventListener("pointercancel", resumeTimeline);
+    return () => {
+      window.removeEventListener("pointerup", resumeTimeline);
+      window.removeEventListener("pointercancel", resumeTimeline);
+      timelineAnimations.current.forEach(animation => { animation.element.style.animationPlayState = "running"; });
+    };
+  }, []);
+
+  const beginScratch = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    isScratching.current = true;
+    lastAngle.current = pointerAngle(event);
+    const animatedElements = timelineRef.current?.querySelectorAll<HTMLElement>("*") ?? [];
+    timelineAnimations.current = Array.from(animatedElements).flatMap(element => {
+      const style = window.getComputedStyle(element);
+      const duration = cssTimeToMilliseconds(style.animationDuration);
+      if (style.animationName === "none" || !Number.isFinite(duration) || duration <= 0) return [];
+      const animation = { delay: cssTimeToMilliseconds(style.animationDelay), duration, element };
+      element.style.animationPlayState = "paused";
+      return [animation];
+    });
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setScratching(true);
+  };
+
+  const scratch = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (!isScratching.current) return;
+    const nextAngle = pointerAngle(event);
+    moveTimeline(normalizedAngleDelta(nextAngle, lastAngle.current));
+    lastAngle.current = nextAngle;
+  };
+
+  const releaseScratch = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (!isScratching.current) return;
+    isScratching.current = false;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    timelineAnimations.current.forEach(animation => { animation.element.style.animationPlayState = "running"; });
+    setScratching(false);
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        className={`history-record-position${scratching ? " is-scratching" : ""}`}
+        aria-label="Scratch the record to scrub the Clip, Paste, and History animations"
+        onPointerDown={beginScratch}
+        onPointerMove={scratch}
+        onPointerUp={releaseScratch}
+        onPointerCancel={releaseScratch}
+        onLostPointerCapture={releaseScratch}
+      >
+        <span className="history-record-wobble" aria-hidden="true">
+          <span className="history-record"><i/><b/></span>
+        </span>
+      </button>
+      <div className="history-record-speed" aria-hidden="true"><span>33⅓ RPM</span><strong>{scratching ? "SCRATCHING HISTORY" : "SPIN ME RIGHT ROUND"}</strong></div>
+    </>
+  );
+};
+
 const irresponsibleStatuses = [
   "RESPONSIBLE ENOUGH",
   "UNAUTHORIZED COPY DETECTED",
@@ -151,71 +233,6 @@ const covenant = [
   { number: "03", title: "No subscription", body: "Pasted will not rent your own clipboard back to you. If it earns a place in your workflow, support is an endorsement—not an unlock." },
   { number: "04", title: "Every copycat welcome", body: "Humans use the app. Scripts use the CLI. Automations and agents use the tools you explicitly give them. Everyone shares the same local library." },
 ];
-
-function ProductWindow() {
-  const [visibleClips, setVisibleClips] = useState(3);
-  const [selected, setSelected] = useState(0);
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      if (document.hidden) return;
-      setVisibleClips(current => current >= clips.length ? 3 : current + 1);
-      setSelected(0);
-    }, 3200);
-    return () => window.clearInterval(interval);
-  }, []);
-
-  const shownClips = clips.slice(0, visibleClips);
-  const activeClip = shownClips[selected] ?? shownClips[0];
-
-  return (
-    <div className="product-window" aria-label="Preview of the Pasted app">
-      <div className="window-bar">
-        <span className="traffic red" /><span className="traffic yellow" /><span className="traffic green" />
-        <span className="window-title">Pasted</span>
-      </div>
-      <div className="product-grid">
-        <aside className="app-sidebar">
-          <p className="eyebrow">Clips</p>
-          <div className="nav-item active"><span><Clipboard /></span> History <b>248</b></div>
-          <div className="nav-item"><span><ListOrdered /></span> Queue</div>
-          <div className="nav-item pin"><span><Pin /></span> Pinned <b>4</b></div>
-          <div className="nav-item protect"><span><Shield /></span> Protected</div>
-          <div className="nav-item noted"><span><StickyNote /></span> Noted <b>3</b></div>
-          <div className="nav-item trashed"><span><Trash2 /></span> Trashed</div>
-          <p className="eyebrow bins">Bins</p>
-          <div className="nav-item"><span>💬</span> Canned Replies</div>
-          <div className="nav-item"><span>💻</span> Code Snippets <b>12</b></div>
-          <div className="nav-item"><span>🔗</span> Links &amp; Web</div>
-        </aside>
-        <section className="clip-list">
-          <div className="list-head"><div><Clipboard /><strong>HISTORY</strong></div><span><Pause /><Disc3 /></span></div>
-          <div className="clip-stack">
-            {shownClips.map((clip, index) => (
-              <button type="button" className={`clip-card ${index === selected ? "selected" : ""}`} key={`${visibleClips}-${clip.app}`} onClick={() => setSelected(index)}>
-                <span className={`clip-icon ${clip.tone}`}>{clip.icon}</span>
-                <div><strong>{clip.app}</strong><p>{clip.text}</p></div>
-                <time>{clip.meta}</time>
-              </button>
-            ))}
-          </div>
-        </section>
-        <section className="clip-preview">
-          <div className="preview-head"><span className="type-pill">{activeClip.type ?? "Text"}</span><strong>{activeClip.app}</strong><span className="preview-actions"><Workflow /><Copy /><Pin /><Shield /><StickyNote /><Trash2 /></span></div>
-          <div className="preview-body">
-            <div className="preview-label">CLIP CONTENT</div>
-            <p>{activeClip.text}</p>
-          </div>
-          <div className="preview-meta"><span>CHARS<br/><b>{activeClip.text.length}</b></span><span>WORDS<br/><b>{activeClip.text.split(/\s+/).length}</b></span><span>CAPTURED<br/><b>{activeClip.meta}</b></span></div>
-        </section>
-      </div>
-      <div className="capture-signal" aria-live="polite" key={`ready-${activeClip.app}`}>
-        <span><History /></span>
-        <div><strong>Ready for later.</strong><small>Captured automatically from {activeClip.app}</small></div>
-      </div>
-    </div>
-  );
-}
 
 const demoSnippets = [
   "The password is definitely not password.",
@@ -418,6 +435,7 @@ export default function App() {
   const [copycatBursts, setCopycatBursts] = useState<number[]>([]);
   const irresponsible = irresponsibleLevel > 0;
   const trailRef = useRef<HTMLElement>(null);
+  const storyTimelineRef = useRef<HTMLDivElement>(null);
   const trailEntryId = useRef(1);
   const copycatBurstId = useRef(1);
   const copycatBurstTimers = useRef<Map<number, number>>(new Map());
@@ -930,7 +948,7 @@ export default function App() {
             <h2 id="supporting-cast">Meet the supporting cast.<br/><em>They’re very attached.</em></h2>
             <p>Three ordinary office supplies. One extraordinary inability to let go.</p>
           </div>
-          <div className="story-grid">
+          <div className="story-grid" ref={storyTimelineRef}>
             <article className="story-card clip-story">
               <header><span>01</span><strong>Clip</strong><small>Short-term memory</small></header>
               <div className="story-stage" aria-hidden="true">
@@ -952,10 +970,8 @@ export default function App() {
             </article>
             <article className="story-card history-story">
               <header><span>03</span><strong>History</strong><small>Professional overthinker</small></header>
-              <div className="story-stage" aria-hidden="true">
-                <div className="history-reel"><i/></div>
-                <div className="history-tape"><div className="history-tape-track"><span>JUST NOW</span><span>EARLIER</span><span>THAT THING</span><span>JUST NOW</span><span>EARLIER</span><span>THAT THING</span></div></div>
-                <div className="history-reel history-reel-take-up"><i/></div>
+              <div className="story-stage">
+                <ScratchableHistoryRecord timelineRef={storyTimelineRef}/>
               </div>
               <h3>Brings up everything from the past.</h3>
               <p>Usually exhausting. Surprisingly useful when the past contains your perfect sentence.</p>
