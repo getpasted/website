@@ -3,7 +3,7 @@ import type { CSSProperties, MouseEvent as ReactMouseEvent, PointerEvent as Reac
 import { selectPublicRelease } from "./releases";
 import type { PublicRelease } from "./releases";
 import { CliTerminal } from "./CliTerminal";
-import { AppCaptureShowcase } from "./AppCaptureShowcase";
+import { CinematicHeroTeaser, CinematicProductStory } from "./CinematicProductStory";
 
 const repoUrl = "https://github.com/getpasted/pasted";
 const docsUrl = `${repoUrl}/wiki`;
@@ -906,7 +906,7 @@ export default function App() {
             <span className="specimen specimen-c">CLONE VERIFIED</span>
             <span className="specimen specimen-d">⌘C → ⌘V</span>
           </div>
-          <AppCaptureShowcase hero/>
+          <CinematicHeroTeaser/>
         </section>
 
         <section className="trust-line" aria-label="Pasted qualities">
@@ -996,8 +996,8 @@ export default function App() {
 
         <section className="actual-app-section" id="inside-the-app">
           <div className="chapter-mark"><span>05</span><p>The actual application</p></div>
-          <div className="section-intro"><p className="kicker">No artist’s impression</p><h2>This is Pasted.<br/><em>Go ahead. Pixel-peep it.</em></h2><p>Every screen below was captured directly from the real Pasted interface. Click through History, Smart Bins, Functionality, Storage, App Lock, Transforms, and Insights.</p></div>
-          <AppCaptureShowcase/>
+          <div className="section-intro"><p className="kicker">No artist’s impression</p><h2>This is Pasted.<br/><em>Now watch it work.</em></h2><p>Five cinematic chapters choreographed from the real interface. Every stage plays automatically in view; click Replay to run the take again.</p></div>
+          <CinematicProductStory/>
         </section>
 
         <section className="split-section" id="privacy">
