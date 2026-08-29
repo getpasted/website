@@ -3,6 +3,7 @@ import type { CSSProperties, MouseEvent as ReactMouseEvent, PointerEvent as Reac
 import { selectPublicRelease } from "./releases";
 import type { PublicRelease } from "./releases";
 import { ProductWindow } from "./ProductWindow";
+import { CliTerminal } from "./CliTerminal";
 
 const repoUrl = "https://github.com/getpasted/pasted";
 const docsUrl = `${repoUrl}/wiki`;
@@ -999,8 +1000,8 @@ export default function App() {
         </section>
 
         <section className="cli-section" id="cli">
-          <div><p className="kicker">Speak softly and carry a big pipe</p><h2>Open the hatch.<br/><em>There’s a CLI underneath.</em></h2><p>Point and click until you’d rather pipe and script. The command line uses the same library and machinery as the app.</p></div>
-          <div className="terminal"><div className="terminal-bar"><span className="traffic red"/><span className="traffic yellow"/><span className="traffic green"/><small>zsh</small></div><pre><span className="prompt">$</span> pasted copy "https://wordpress.org/download/"<br/><span className="dim">Saved.</span> The web can continue.<br/><br/><span className="prompt">$</span> pasted search "Framework screwdriver"<br/><span className="dim">Found.</span> The laptop you are allowed to open.<br/><br/><span className="prompt">$</span> pasted search "Vollebak Full Metal Jacket"<br/><span className="dim">Found.</span> Tuesday outfit. 11km of copper included. <span className="cursor">▋</span></pre></div>
+          <div><p className="kicker">Speak softly and carry a big pipe</p><h2>Open the hatch.<br/><em>There’s a CLI underneath.</em></h2><p>Point and click until you’d rather pipe and script. These are real Pasted commands reading the same ridiculous clips and Bins as the app mock above.</p></div>
+          <CliTerminal/>
         </section>
 
         <section className="covenant-section" id="covenant" aria-labelledby="covenant-title">

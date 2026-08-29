@@ -60,7 +60,13 @@ export function ProductWindow() {
 
   useEffect(() => {
     if (paused) return;
-    clipStackRef.current?.querySelector<HTMLElement>("[data-active='true']")?.scrollIntoView({ block: "nearest" });
+    const stack = clipStackRef.current;
+    const active = stack?.querySelector<HTMLElement>("[data-active='true']");
+    if (!stack || !active) return;
+    const itemTop = active.offsetTop;
+    const itemBottom = itemTop + active.offsetHeight;
+    if (itemTop < stack.scrollTop) stack.scrollTop = itemTop;
+    else if (itemBottom > stack.scrollTop + stack.clientHeight) stack.scrollTop = itemBottom - stack.clientHeight;
   }, [paused, selectedIndex]);
 
   const selectedClip = demoClips[selectedIndex] ?? demoClips[0];
@@ -112,6 +118,27 @@ export function ProductWindow() {
     setStatusDetail(nextClip.text);
     setSelectedIndex(nextIndex);
   };
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("pasted-demo-clip-selected", { detail: { id: activeClip.id } }));
+  }, [activeClip.id]);
+
+  useEffect(() => {
+    const selectFromCli = (event: Event) => {
+      const id = (event as CustomEvent<{ id?: string }>).detail?.id;
+      if (!id) return;
+      const nextIndex = demoClips.findIndex(candidate => candidate.id === id);
+      const clip = demoClips[nextIndex];
+      if (!clip) return;
+      setPaused(true);
+      setCollectionId(`bin:${clip.bin}`);
+      setSelectedIndex(nextIndex);
+      setStatus(`${clip.contentType.toUpperCase()} SELECTED · ${clip.app.toUpperCase()}`);
+      setStatusDetail(clip.text);
+    };
+    window.addEventListener("pasted-demo-select-clip", selectFromCli);
+    return () => window.removeEventListener("pasted-demo-select-clip", selectFromCli);
+  }, []);
 
   const runAction = (message: string, action?: () => void) => {
     setPaused(true);
