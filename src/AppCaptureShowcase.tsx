@@ -29,7 +29,9 @@ export function AppCaptureShowcase({ hero = false }: { hero?: boolean }) {
       <span className="capture-real"><i/> REAL INTERFACE</span>
     </div>
     <figure>
-      <img className="active" src={current.image} alt={current.alt} key={current.id}/>
+      <div className={`capture-viewport capture-focus-${current.id}`}>
+        <img className="active" src={current.image} alt={current.alt} key={current.id}/>
+      </div>
       <figcaption><span><current.icon/><b>{current.label}</b></span><small>{current.detail}</small></figcaption>
     </figure>
     <div className="capture-controls">
