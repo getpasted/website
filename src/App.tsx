@@ -906,7 +906,6 @@ export default function App() {
             <span className="specimen specimen-c">CLONE VERIFIED</span>
             <span className="specimen specimen-d">⌘C → ⌘V</span>
           </div>
-          <AppCaptureShowcase hero/>
         </section>
 
         <section className="trust-line" aria-label="Pasted qualities">

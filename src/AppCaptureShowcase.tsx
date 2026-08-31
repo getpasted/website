@@ -11,7 +11,7 @@ const captures = [
   { id: "insights", label: "Insights", detail: "Local library composition and trends", image: "/app-captures/pasted-insights.jpg", alt: "The real Pasted Insights dashboard", icon: BarChart3 },
 ] as const;
 
-export function AppCaptureShowcase({ hero = false }: { hero?: boolean }) {
+export function AppCaptureShowcase() {
   const [active, setActive] = useState(0);
   const [playing, setPlaying] = useState(true);
 
@@ -22,11 +22,9 @@ export function AppCaptureShowcase({ hero = false }: { hero?: boolean }) {
   }, [playing]);
 
   const current = captures[active];
-  return <div className={`app-capture-showcase${hero ? " hero-capture" : ""}`} aria-label="Tour of the real Pasted app">
+  return <div className="app-capture-showcase" aria-label="Tour of Pasted">
     <div className="capture-window-bar">
       <span className="traffic red"/><span className="traffic yellow"/><span className="traffic green"/>
-      <span className="capture-window-title">Pasted — actual app capture</span>
-      <span className="capture-real"><i/> REAL INTERFACE</span>
     </div>
     <figure>
       <div className={`capture-viewport capture-focus-${current.id}`}>
@@ -35,7 +33,7 @@ export function AppCaptureShowcase({ hero = false }: { hero?: boolean }) {
       <figcaption><span><current.icon/><b>{current.label}</b></span><small>{current.detail}</small></figcaption>
     </figure>
     <div className="capture-controls">
-      <div className="capture-tabs" role="tablist" aria-label="Real Pasted screens">{captures.map((capture, index) => <button type="button" role="tab" aria-selected={index === active} className={index === active ? "active" : ""} onClick={() => { setActive(index); setPlaying(false); }} key={capture.id}><capture.icon/><span><b>{capture.label}</b><small>{capture.detail}</small></span></button>)}</div>
+      <div className="capture-tabs" role="tablist" aria-label="Pasted screens">{captures.map((capture, index) => <button type="button" role="tab" aria-selected={index === active} className={index === active ? "active" : ""} onClick={() => { setActive(index); setPlaying(false); }} key={capture.id}><capture.icon/><span><b>{capture.label}</b><small>{capture.detail}</small></span></button>)}</div>
       <button type="button" className="capture-play" onClick={() => setPlaying(value => !value)} aria-label={playing ? "Pause app capture tour" : "Play app capture tour"}>{playing ? <Pause/> : <Play/>}<span>{playing ? "PAUSE TOUR" : "PLAY TOUR"}</span></button>
     </div>
     <div className="capture-progress" aria-hidden="true"><i key={`${active}-${playing}`} className={playing ? "is-playing" : ""}/></div>
