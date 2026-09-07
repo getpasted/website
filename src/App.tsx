@@ -3,7 +3,7 @@ import type { CSSProperties, MouseEvent as ReactMouseEvent, PointerEvent as Reac
 import { selectPublicRelease } from "./releases";
 import type { PublicRelease } from "./releases";
 import { CliTerminal } from "./CliTerminal";
-import { AppCaptureShowcase } from "./AppCaptureShowcase";
+import { CinematicAppFeature } from "./CinematicAppFeature";
 
 const repoUrl = "https://github.com/getpasted/pasted";
 const docsUrl = `${repoUrl}/wiki`;
@@ -402,7 +402,7 @@ function ReleaseVault() {
         <div className="vault-label"><span>PUBLIC RELEASE</span><i>{release.prerelease ? "RELEASE CANDIDATE" : "READY"}</i></div>
         <img src="/pasted-mark.svg" alt="" />
         <h3>{release.name || `Pasted ${version}`}</h3>
-        <p>Freshly bottled, publicly inspectable, and accompanied by cryptographic receipts.</p>
+        <p>Freshly bottled, publicly inspectable, and accompanied by cryptographic proof.</p>
         {platform === "windows" ? <a className="button primary windows-wait" href={release.html_url}>Windows is sobering up <span>…</span></a> : <div className="release-buttons">
           {primaryAsset && <a className="button primary" href={primaryAsset.browser_download_url}>Download for {primaryLabel} <span>↓</span></a>}
           {secondaryAsset && <a className="button secondary" href={secondaryAsset.browser_download_url}>{secondaryLabel} <span>↓</span></a>}
@@ -912,7 +912,7 @@ export default function App() {
           <span>Copy and forget</span><i /> <span>Lose nothing</span><i /> <span>Find the unfindable</span><i /> <span>Copy irresponsibly</span>
         </section>
 
-        <div className="replication-ribbon" aria-hidden="true">
+        <div className="replication-ribbon" id="demo-transition" aria-hidden="true">
           <div className="replication-track">
             {[0, 1].map(copy => (
               <div className="replication-set" key={copy}>
@@ -921,6 +921,8 @@ export default function App() {
             ))}
           </div>
         </div>
+
+        <CinematicAppFeature/>
 
         <section className="enemy-section" id="enemy">
           <div className="chapter-mark"><span>01</span><p>The enemy has no memory</p></div>
@@ -991,12 +993,6 @@ export default function App() {
           <div className="feature-grid">
             {features.map(feature => <article className={`feature-card feature-${feature.kind}`} key={feature.title}><span>{feature.icon}</span><FeaturePreview kind={feature.kind}/><h3>{feature.title}</h3><p>{feature.body}</p></article>)}
           </div>
-        </section>
-
-        <section className="actual-app-section" id="inside-the-app">
-          <div className="chapter-mark"><span>05</span><p>The actual application</p></div>
-          <div className="section-intro"><p className="kicker">No artist’s impression</p><h2>This is Pasted.<br/><em>Go ahead. Pixel-peep it.</em></h2><p>Every screen below was captured directly from the real Pasted interface. Click through History, Smart Bins, Functionality, Storage, App Lock, Transforms, and Insights.</p></div>
-          <AppCaptureShowcase/>
         </section>
 
         <section className="split-section" id="privacy">
@@ -1104,11 +1100,11 @@ export default function App() {
           <div className="release-copy">
             <p className="kicker">The boring part, documented like somebody knew lawyers</p>
             <h2>Download with confidence.<br/><em>Or at least checksums.</em></h2>
-            <p>Pasted is open source, keeps its core library on your device, and ships with enough receipts to make a clipboard app look oddly responsible.</p>
+            <p>Pasted is open source, keeps its core library on your device, and ships with enough public documentation to make a clipboard app look oddly responsible.</p>
             <div className="release-facts">
               <article><span>⌘</span><div><strong>macOS</strong><small>Signed and notarized by Apple.</small></div></article>
               <article><span>▣</span><div><strong>Linux</strong><small>AppImage tested on SteamOS.</small></div></article>
-              <article><span>#</span><div><strong>Checksums</strong><small>SHA-256 receipts included.</small></div></article>
+              <article><span>#</span><div><strong>Checksums</strong><small>SHA-256 fingerprints included.</small></div></article>
               <article><span>⊞</span><div><strong>Windows</strong><small>Experimental builds available.</small></div></article>
             </div>
           </div>

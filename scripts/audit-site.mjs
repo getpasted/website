@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -21,6 +21,23 @@ for (const page of requiredPages) {
   await access(path.join(dist, page, "index.html"));
   assert.match(sitemap, new RegExp(`<loc>https://getpasted\\.app/${page}/</loc>`));
 }
+
+await access(path.join(dist, "favicon-48.png"));
+await access(path.join(dist, "apple-touch-icon.png"));
+assert.match(index, /<link rel="icon" href="\/favicon-48\.png" type="image\/png" sizes="48x48" \/>/);
+assert.match(index, /<link rel="apple-touch-icon" href="\/apple-touch-icon\.png" sizes="180x180" \/>/);
+
+const captureDirectory = path.join(dist, "app-captures");
+const captureFiles = await readdir(captureDirectory);
+const captureMasters = captureFiles.filter(file => file.endsWith("-4x.png"));
+assert.equal(captureMasters.length, 17, "Expected every cinematic capture master");
+for (const master of captureMasters) {
+  const basename = master.slice(0, -4);
+  assert.ok(captureFiles.includes(`${basename}.webp`), `Missing lossless WebP for ${master}`);
+  assert.ok(captureFiles.includes(`${basename}-1600w.webp`), `Missing responsive WebP for ${master}`);
+}
+assert.equal(captureFiles.filter(file => file.endsWith(".jpg")).length, 0, "Retired gallery captures must not ship");
+assert.doesNotMatch(index, /factorio/i);
 
 const thanks = await readFile(path.join(dist, "thanks", "index.html"), "utf8");
 const notFound = await readFile(path.join(dist, "404.html"), "utf8");
