@@ -19,3 +19,7 @@ The production build pre-renders the React homepage for crawlers and no-script
 clients, then audits the generated metadata, sitemap, focused landing pages,
 and public deploy assets. Release-selection unit tests protect the download
 card from mistaking mutable updater-channel releases for versioned builds.
+
+The unlinked `/story/` archive preserves retired home-page sections. It is
+pre-rendered with `noindex, nofollow`, excluded from the sitemap, and loads its
+interactive code and stylesheet separately from the home page.

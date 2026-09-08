@@ -53,7 +53,7 @@ const encoreFeatures = [
     alt: "An abstract exploded view of Pasted Search History showing nine reusable searches and their wonderfully suspicious usage counts",
     description: "Rerun the useful searches. Remove the incriminating ones. Quietly accept that “Gary” has been searched 38 times and the situation is not improving.",
     image: "/app-captures/pasted-search-history-4x.png",
-    kicker: "Search History · 9 saved searches",
+    kicker: "Search History",
     signal: "SEARCH / RECALL / DELETE",
     title: <>Find it again.<br/><em>Question it later.</em></>,
   },
@@ -61,7 +61,7 @@ const encoreFeatures = [
     alt: "An exploded close-up of Pasted Analysis settings showing its six-stage local analysis sequence and OCR status",
     description: "Capture, inspect, classify, extract, index, and suggest without asking a server to help. OCR makes images searchable, then politely reports that seventeen contained absolutely nothing useful.",
     image: "/app-captures/pasted-analysis-4x.png",
-    kicker: "Local Analysis · 6 stages",
+    kicker: "Local Analysis",
     signal: "CAPTURE / EXTRACT / SEARCH",
     title: <>It read the screenshot.<br/><em>It told no one.</em></>,
   },
@@ -69,7 +69,7 @@ const encoreFeatures = [
     alt: "An abstract close-up of Pasted's built-in CLI reference showing installation, history, search, notes, and revision commands",
     description: "Search, organize, annotate, and restore the same local library from a shell. Add JSON when the clipboard situation has progressed beyond human supervision.",
     image: "/app-captures/pasted-cli-reference-4x.png",
-    kicker: "CLI · Same library, fewer windows",
+    kicker: "CLI",
     signal: "SEARCH / SCRIPT / --JSON",
     title: <>The GUI left.<br/><em>The library stayed.</em></>,
   },
@@ -77,7 +77,7 @@ const encoreFeatures = [
     alt: "An abstract exploded view of Pasted Activity showing a local audit trail of important library events",
     description: "See what changed without recording what was copied. The audit trail remembers the action, the outcome, and precisely when normal operations became negotiable.",
     image: "/app-captures/pasted-activity-4x.png",
-    kicker: "Activity · Local audit trail",
+    kicker: "Activity",
     signal: "EVENT / OUTCOME / LOCAL",
     title: <>Accountability.<br/><em>Minus the creepy part.</em></>,
   },
@@ -195,7 +195,7 @@ export function CinematicAppFeature() {
       kicker="Functionality · Full"
       image="/app-captures/pasted-functionality-4x.png"
       alt="An exploded close-up of Pasted Functionality settings showing independently controlled Bins, Naming, Notes, Pinning, Protection, Concealment, Trash, and Revision History"
-      headline={<>Start simple.<br/>Get specific.<br/><em>Turn on<br/>everything.</em></>}
+      headline={<>I did mean to<br/><em>turn you on.</em></>}
       description="Enable exactly the clipboard system you want. Bins, Notes, Pinning, Protection, Concealment, Revision History, and the gloriously optional machinery beyond them all stay independently controlled."
       footnote="*Restraint remains available under Simple."
       stats={[["2", "presets"], ["full", "current mood"], ["0", "features forced*"]]}
@@ -238,7 +238,7 @@ export function CinematicAppFeature() {
       kicker="Revision History · 6 versions"
       image="/app-captures/pasted-revision-history-4x.png"
       alt="An exploded view of Pasted showing six restorable versions of a suspicious production hotfix"
-      headline={<>Nothing is final.<br/><em>Especially<br/>final-final.</em></>}
+      headline={<>Purple won.<br/><em>Try again yesterday.</em></>}
       description="Every edit leaves a restorable version behind. Compare the panic, rewind past Bernard’s approval, and return to the timeline where Purple Tentacle never noticed."
       footnote="*Hamster-based rollback remains experimental."
       stats={[["6", "versions"], ["11 hr", "of bad ideas"], ["1", "timeline restored*"]]}
@@ -249,7 +249,7 @@ export function CinematicAppFeature() {
       kicker="Content Types · Shell Command"
       image="/app-captures/pasted-content-types-shell-command-4x.png"
       alt="Pasted recognizing Shell Commands among clips from Terminal, Hyper, and other source applications"
-      headline={<>Know what it is.<br/><em>Even if<br/>you don’t.</em></>}
+      headline={<>What it is.<br/><em>What it isn’t.</em></>}
       description="A command is not prose, even when it contains a desperate whisper. Pasted recognizes links, code, paths, and shell commands—then remembers which app committed the act."
       stats={[["56", "commands"], ["11", "sources"], ["1", "polite whisper*"]]}
     />
@@ -259,7 +259,7 @@ export function CinematicAppFeature() {
       kicker="Smart Bin · 18 matches"
       image="/app-captures/pasted-smart-bin-rules-4x.png"
       alt="Pasted editing a Smart Bin named Piracy as a Service beside automatically matched ScummVM clips"
-      headline={<>Every insult.<br/><em>Perfectly<br/>categorized.</em></>}
+      headline={<>Behind you!<br/><em>A three-headed<br/>Smart Bin.</em></>}
       description="Set the rules once. Pasted automatically corrals every rubber chicken, three-headed monkey sighting, and vocabulary-dependent duel into the correct corner of the Caribbean."
       footnote="*Sword-fighting proficiency remains vocabulary-dependent."
       stats={[["2", "rules"], ["18", "matches"], ["0", "clips filed by hand*"]]}
