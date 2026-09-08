@@ -13,7 +13,7 @@ html { scroll-behavior: smooth; }
 body { margin: 0; min-width: 320px; background: radial-gradient(circle at 52% 5%, rgba(52, 148, 255, .15), transparent 34rem), #0b0d0f; }
 a { color: inherit; }
 .site-header, main, footer { width: min(940px, calc(100% - 40px)); margin-inline: auto; }
-.site-header { min-height: 84px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--line); }
+.site-header { min-height: 84px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brand { display: inline-flex; align-items: center; gap: 11px; color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -.04em; text-decoration: none; }
 .brand img { width: 30px; filter: invert(1); }
 nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 22px; color: var(--muted); font-size: 14px; font-weight: 650; }
@@ -35,7 +35,7 @@ h1 { max-width: 850px; margin: 20px 0 26px; font-size: clamp(46px, 8vw, 78px); l
 .button.primary { border-color: transparent; color: #0d1511; background: linear-gradient(180deg, #7cf0c1, #58d8a4); }
 code { overflow-wrap: anywhere; color: #cdeee1; font-family: "SFMono-Regular", Consolas, monospace; }
 .command { padding: 17px 19px; border: 1px solid rgba(101, 230, 180, .2); border-radius: 12px; background: rgba(101, 230, 180, .055); }
-footer { padding: 28px 0 40px; display: flex; justify-content: space-between; gap: 24px; border-top: 1px solid var(--line); color: #737b7b; font-size: 13px; }
+footer { padding: 28px 0 40px; display: flex; justify-content: space-between; gap: 24px; color: #737b7b; font-size: 13px; }
 footer div { display: flex; flex-wrap: wrap; gap: 18px; }
 @media (max-width: 680px) {
   .site-header, footer { align-items: flex-start; flex-direction: column; padding-block: 22px; }
