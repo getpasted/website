@@ -85,3 +85,22 @@ for (const file of homeEntry.css) {
   assert.doesNotMatch(css, /\.memory-trail|\.enemy-section|\.clipboard-lab|\.cli-section/);
 }
 console.log("Homepage asset isolation passed.");
+
+// Validate destinations, not merely the presence of links in the footer.
+for (const page of ["", ...requiredPages, "story"]) {
+  const content = await readFile(path.join(dist, page, "index.html"), "utf8");
+  const footer = content.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1];
+  assert.ok(footer, `Missing footer on /${page}`);
+  for (const [, href] of footer.matchAll(/href="([^"]*)"/g)) {
+    assert.ok(href && href !== "#", "Footer links need a destination");
+    const destination = new URL(href, `https://getpasted.app/${page ? `${page}/` : ""}`);
+    if (destination.origin !== "https://getpasted.app") {
+      assert.equal(destination.protocol, "https:");
+      continue;
+    }
+    const target = path.join(dist, destination.pathname, "index.html");
+    const targetHtml = await readFile(target, "utf8");
+    if (destination.hash) assert.ok(targetHtml.includes(`id="${destination.hash.slice(1)}"`), `Missing footer anchor ${href}`);
+  }
+}
+console.log("Footer destinations passed: every local page and anchor exists.");
