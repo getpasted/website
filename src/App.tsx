@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { ExternalLink } from "lucide-react";
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "react";
 import { selectPublicRelease } from "./releases";
 import type { PublicRelease } from "./releases";
@@ -708,11 +709,28 @@ export default function App({ storyContent }: { storyContent?: ReactNode }) {
         </>}
       </main>
 
-      <footer><a className="brand footer-brand" href={story ? "/" : "#top"}><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a><p>Made by Triple J Software, Inc. Copy irresponsibly.</p><div><button type="button" className="irresponsible-trigger" onClick={() => {
-        const next = irresponsibleLevel === 5 ? 0 : irresponsibleLevel + 1;
-        setIrresponsibleLevel(next);
-        setToast(irresponsibleMessages[next]);
-      }}>{irresponsibleLabels[irresponsibleLevel]}</button><a href="/features/">Features</a><a href="/download/">Download</a><a href="/cli/">CLI</a><a href="/privacy/">Privacy</a><a href={docsUrl}>Docs</a><a href={repoUrl}>GitHub</a><a href="/#listening">Feedback</a></div></footer>
+      <footer className="site-footer">
+        <div className="footer-identity">
+          <a className="brand footer-brand" href={story ? "/" : "#top"}><span className="brand-mark"><img src="/pasted-mark.svg" alt="" /></span>Pasted</a>
+          <p>Made by Triple J Software, Inc.<br/>Copy irresponsibly. <button type="button" className="irresponsible-trigger" onClick={() => {
+            const next = irresponsibleLevel === 5 ? 0 : irresponsibleLevel + 1;
+            setIrresponsibleLevel(next);
+            setToast(irresponsibleMessages[next]);
+          }}>{irresponsibleLabels[irresponsibleLevel]}</button></p>
+        </div>
+        <nav className="footer-links" aria-label="Footer navigation">
+          <div className="footer-link-group" role="group" aria-label="Home page sections">
+            <a href="/#download">Download</a><a href="/#listening">Feedback</a>
+          </div>
+          <div className="footer-link-group" role="group" aria-label="Pages">
+            <a href="/features/">Features</a><a href="/cli/">CLI</a><a href="/privacy/">Privacy</a>
+          </div>
+          <div className="footer-link-group" role="group" aria-label="Offsite">
+            <a href={docsUrl} aria-label="Docs (offsite)">Docs <ExternalLink aria-hidden="true" /></a>
+            <a href={repoUrl} aria-label="GitHub (offsite)">GitHub <ExternalLink aria-hidden="true" /></a>
+          </div>
+        </nav>
+      </footer>
     </div>
   );
 }
