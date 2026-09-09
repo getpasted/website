@@ -23,3 +23,8 @@ card from mistaking mutable updater-channel releases for versioned builds.
 The unlinked `/story/` archive preserves retired home-page sections. It is
 pre-rendered with `noindex, nofollow`, excluded from the sitemap, and loads its
 interactive code and stylesheet separately from the home page.
+
+The `/thanks/` payment-confirmation page is intentionally sparse. Its compact
+footer omits the shared grouped navigation and `footer.css` so the page stays
+focused on the confirmation and return actions. It is an intentional exception
+to the shared footer layout used by the main site and standalone landing pages.
